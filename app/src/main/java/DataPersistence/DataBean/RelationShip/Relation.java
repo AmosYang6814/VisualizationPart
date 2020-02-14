@@ -5,11 +5,13 @@ package DataPersistence.DataBean.RelationShip;
  */
 
 public class Relation {
-
+    public static final int RELATION=10002;
     /**
      * 关系连接的id的值，自增的属性，无需设定
      */
     int id;
+
+
 
     /**
      * 前一个状态的id
@@ -27,12 +29,10 @@ public class Relation {
         return id;
     }
 
-    /**
-     * set id by auto increase
-     */
-    private void increaseId(){
-
+    public void setId(int id) {
+        this.id = id;
     }
+
 
     public int getPer_status_id() {
         return per_status_id;

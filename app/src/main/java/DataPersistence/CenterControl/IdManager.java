@@ -9,6 +9,7 @@ import java.util.Set;
 
 import DataPersistence.AbstractStorage.PreserveId;
 import DataPersistence.DataBean.Component.Component;
+import DataPersistence.DataBean.RelationShip.Relation;
 import DataPersistence.DataBean.Status.Status;
 
 /**
@@ -74,7 +75,7 @@ public class IdManager {
      * 注册关系组件
      * @return
      */
-    public int registerRelation(){
+    public int registerRelation(Relation relation){
         for(int i=100;i<100000;i++)if(!relationId.contains(i))return i;
         return -1;
     }

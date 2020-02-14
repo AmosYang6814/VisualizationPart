@@ -5,4 +5,6 @@ package UI.Translate;
  */
 
 public interface TranslateToComponent {
+
+
 }

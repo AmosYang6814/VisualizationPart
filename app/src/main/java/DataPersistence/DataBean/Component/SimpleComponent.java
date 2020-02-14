@@ -15,7 +15,7 @@ public class SimpleComponent implements Component {
     /**
      * id of the component,is auto increase
      */
-    int Id;
+    int Id=-1;
 
     /**
      * the name of the component,
@@ -45,10 +45,9 @@ public class SimpleComponent implements Component {
         return Id;
     }
 
-    /**
-     * set id by auto increase
-     */
-    public void increaseId(){
+    @Override
+    public void setId(int id) {
+        this.Id=id;
     }
 
     /**

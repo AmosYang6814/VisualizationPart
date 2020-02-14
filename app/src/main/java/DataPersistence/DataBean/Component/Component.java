@@ -5,12 +5,13 @@ package DataPersistence.DataBean.Component;
  */
 
 public interface Component {
+    static final int COMPONENT=10001;
     static final int COMPLEX_COMPONENT_TYPE=01;
     static final int SIMPLE_COMPONENT_TYPE=02;
 
     int getId();
 
-    void increaseId();
+    void setId(int id);
 
     /**
      * 获取组件类型

@@ -4,12 +4,30 @@ package DataPersistence.DataBean.Component;
  * Created by Administrator on 2020/2/1.
  */
 
+import android.opengl.Visibility;
+
 import java.util.LinkedList;
 
 /**
  * 复杂模块
+ *  :复杂模块中可能包含不可见的组件：因此，需要添加可见性属性
  */
 public class ComplexComponent implements Component {
+
+    /**
+     * 可见性
+     */
+    enum visible{
+        Visibility,UnVisibility
+    };
+    visible visible;
+    public ComplexComponent.visible getVisible() {
+        return visible;
+    }
+
+    public void setVisible(ComplexComponent.visible visible) {
+        this.visible = visible;
+    }
 
     /**
      * 返回组件类型
@@ -23,7 +41,7 @@ public class ComplexComponent implements Component {
     /**
      * 复杂模块的id,自动增长属性，不赋值
      */
-    int id;
+    int id=-1;
 
     /**
      * 复杂模块中的简单模块表
@@ -34,8 +52,12 @@ public class ComplexComponent implements Component {
         return id;
     }
 
-    public void increaseId() {
+    public void setId(int id) {
+        this.id=id;
     }
+
+
+
 
     public LinkedList<SimpleComponent> getSimpleComponents() {
         return simpleComponents;

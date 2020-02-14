@@ -12,6 +12,7 @@ import java.util.Map;
  * 状态记录
  */
 public class Status {
+    public static final int STATUS=10003;
 
     int id; //自注册的id
 
