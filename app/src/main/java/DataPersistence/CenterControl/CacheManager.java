@@ -10,15 +10,12 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedDeque;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import DataPersistence.DataBean.Component.Component;
 import DataPersistence.DataBean.RelationShip.Relation;
 import DataPersistence.DataBean.Status.Status;
-import GlobalDataBean.DataBean.Prioritypack;
+import GlobalTools.DataBean.Prioritypack;
 
 /**
  * 缓存，用于加快操作速度
@@ -393,7 +390,7 @@ public class CacheManager {
                     break;
             }
 
-            DAOmanager.getDaOmanager().getPreserveIdDAO().deleteID(type,id);
+            IdManager.getIdManager().Unregister(id);
             return true;
         } catch (Exception e) {
             e.printStackTrace();

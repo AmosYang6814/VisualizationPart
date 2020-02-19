@@ -12,7 +12,7 @@ import DataPersistence.DataBean.Component.SimpleComponent;
 import DataPersistence.DataBean.Component.attribute;
 import DataPersistence.UpperService.ReadManager;
 import DataPersistence.UpperService.WriteManager;
-import GlobalDataBean.DataBean.UiComponent;
+import GlobalTools.DataBean.UiComponent;
 
 /**
  * Created by Administrator on 2020/2/14.

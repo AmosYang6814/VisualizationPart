@@ -9,6 +9,7 @@ import java.util.List;
 
 import DataPersistence.CenterControl.CacheManager;
 import DataPersistence.DataBean.Component.Component;
+import DataPersistence.DataBean.Status.Status;
 
 /**
  * 允许异步读
@@ -30,6 +31,24 @@ public class ReadManager {
     public static Component getComponentById(int id){
         return CacheManager.getCacheManager().getComponentById(id);
     }
+
+
+    /**
+     * 获取所有的状态
+     * @return
+     */
+    public static List<Status> getAllStatus(){
+        return CacheManager.getCacheManager().getAllStatus();
+    }
+
+    /**
+     * 通过ID获取状态
+     * @return
+     */
+    public static Status getStatusById(int id){
+        return CacheManager.getCacheManager().getStatusById(id);
+    }
+
 
     public static ReadManager GetReadManagerInstance(){
         return new ReadManager();

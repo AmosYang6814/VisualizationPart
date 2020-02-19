@@ -1,6 +1,6 @@
 package DataPersistence.DataBean.Component;
 
-import GlobalDataBean.DataBean.Visibility;
+import GlobalTools.DataBean.Visibility;
 
 /**
  * Created by Administrator on 2020/2/1.

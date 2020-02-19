@@ -57,7 +57,7 @@ public class IdManager {
      * @return
      */
     public int registerComponent(Component component){
-        for(int i=100;i<100000;i++)if(!componentId.contains(i))return i;
+        for(int i=100;i<10000;i++)if(!componentId.contains(i))return i;
         return -1;
     }
 
@@ -67,7 +67,7 @@ public class IdManager {
      * @return
      */
     public int registerStatus(Status status){
-        for(int i=100;i<100000;i++)if(!statusId.contains(i))return i;
+        for(int i=10000;i<20000;i++)if(!statusId.contains(i))return i;
         return -1;
     }
 
@@ -76,7 +76,7 @@ public class IdManager {
      * @return
      */
     public int registerRelation(Relation relation){
-        for(int i=100;i<100000;i++)if(!relationId.contains(i))return i;
+        for(int i=20000;i<30000;i++)if(!relationId.contains(i))return i;
         return -1;
     }
 
@@ -98,5 +98,33 @@ public class IdManager {
 
     public static IdManager getIdManager() {
         return idManager;
+    }
+
+    /**
+     * 在其他层调用注册状态
+     * @return
+     */
+    public int registerStatusInOtherLayer(){
+        for(int i=100;i<100000;i++)if(!statusId.contains(i))return i;
+        return -1;
+    }
+
+    /**
+     * 反注册，卸载
+     * @param id
+     * @return
+     */
+    public boolean Unregister(int id){
+        try {
+            if(componentId.contains(id))componentId.remove(id);
+            else if(statusId.contains(id))statusId.remove(id);
+            else if(relationId.contains(id))relationId.remove(id);
+
+            storeAllIdCache();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }

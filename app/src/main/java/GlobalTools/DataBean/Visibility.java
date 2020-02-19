@@ -1,4 +1,4 @@
-package GlobalDataBean.DataBean;
+package GlobalTools.DataBean;
 
 /**
  * Created by Administrator on 2020/2/17.

@@ -6,8 +6,7 @@ package Logic.Reflect;
 
 import java.util.List;
 
-import DataPersistence.DataBean.Component.Component;
-import GlobalDataBean.DataBean.UiComponent;
+import GlobalTools.DataBean.UiComponent;
 
 /**
  * 实现的功能：

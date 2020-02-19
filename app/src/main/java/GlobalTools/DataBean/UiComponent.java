@@ -1,13 +1,11 @@
-package GlobalDataBean.DataBean;
+package GlobalTools.DataBean;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
-import DataPersistence.DataBean.Component.Component;
 import Logger.LogManager;
 
 /**

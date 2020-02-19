@@ -1,4 +1,4 @@
-package GlobalDataBean.DataBean;
+package GlobalTools.DataBean;
 
 import android.support.annotation.NonNull;
 

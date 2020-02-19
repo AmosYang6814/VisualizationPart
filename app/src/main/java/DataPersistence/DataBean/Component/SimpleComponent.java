@@ -7,7 +7,7 @@ package DataPersistence.DataBean.Component;
 
 import java.util.LinkedList;
 
-import GlobalDataBean.DataBean.Visibility;
+import GlobalTools.DataBean.Visibility;
 
 /**
  * 简单模块的存储实体类
