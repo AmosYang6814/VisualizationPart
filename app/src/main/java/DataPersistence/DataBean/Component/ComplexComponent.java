@@ -4,28 +4,28 @@ package DataPersistence.DataBean.Component;
  * Created by Administrator on 2020/2/1.
  */
 
-import android.opengl.Visibility;
 
 import java.util.LinkedList;
+
+import GlobalDataBean.DataBean.Visibility;
 
 /**
  * 复杂模块
  *  :复杂模块中可能包含不可见的组件：因此，需要添加可见性属性
  */
 public class ComplexComponent implements Component {
-
+    String componentName="";
     /**
+     * -----------------------------------------------------------------------------------------
      * 可见性
      */
-    enum visible{
-        Visibility,UnVisibility
-    };
-    visible visible;
-    public ComplexComponent.visible getVisible() {
+
+    Visibility visible;
+    public Visibility getVisiblity() {
         return visible;
     }
 
-    public void setVisible(ComplexComponent.visible visible) {
+    public void setVisiblity(Visibility visible) {
         this.visible = visible;
     }
 
@@ -36,6 +36,16 @@ public class ComplexComponent implements Component {
     @Override
     public int getType() {
         return COMPLEX_COMPONENT_TYPE;
+    }
+
+    @Override
+    public String getNearName() {
+        return componentName ;
+    }
+
+    @Override
+    public void setNearName(String s) {
+        this.componentName=s;
     }
 
     /**

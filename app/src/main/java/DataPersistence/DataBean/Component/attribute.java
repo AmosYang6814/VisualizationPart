@@ -4,7 +4,13 @@ package DataPersistence.DataBean.Component;
  * Created by Administrator on 2020/2/1.
  */
 
-public class attribute<T> {
+public class attribute {
+
+    public attribute(String name, String value, String defValue) {
+        this.name = name;
+        this.value = value;
+        this.defValue = defValue;
+    }
 
     /**
      * 数据类型名字
@@ -12,9 +18,11 @@ public class attribute<T> {
     String name;
 
     /**
-     * 数据类型泛型
+     * 数据值
+     * 为Gson字符串
+     *
      */
-    T value;
+    String value;
 
     public String getName() {
         return name;
@@ -24,21 +32,21 @@ public class attribute<T> {
         this.name = name;
     }
 
-    public T getValue() {
+    public String getValue() {
         return value;
     }
 
-    public void setValue(T value) {
+    public void setValue(String value) {
         this.value = value;
     }
 
-    T defValue;
+    String defValue;
 
-    public T getDefValue() {
+    public String getDefValue() {
         return defValue;
     }
 
-    public void setDefValue(T defValue) {
+    public void setDefValue(String defValue) {
         this.defValue = defValue;
     }
 }

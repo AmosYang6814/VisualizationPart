@@ -1,5 +1,7 @@
 package DataPersistence.DataBean.Component;
 
+import GlobalDataBean.DataBean.Visibility;
+
 /**
  * Created by Administrator on 2020/2/1.
  */
@@ -18,4 +20,10 @@ public interface Component {
      * @return
      */
     int getType();
+
+    String getNearName();
+    void setNearName(String s);
+
+    void setVisiblity(Visibility visble);
+    Visibility getVisiblity();
 }

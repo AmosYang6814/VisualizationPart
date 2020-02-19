@@ -149,6 +149,21 @@ public class CacheManager {
     }
 
     /**
+     * 修改组件
+     */
+    public boolean modifyComponent(Component component){
+        try {
+            if(component.getId()==-1)return false;  //检查
+            componentCache.get(component.getId()).setObject(component);
+            componentCache.get(component.getId()).increaseCount();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
      * 添加状态
      * @param status
      * @return
@@ -166,6 +181,23 @@ public class CacheManager {
     }
 
     /**
+     * 修改状态
+     * @param status
+     * @return
+     */
+    public boolean modifyStatus(Status status){
+        try {
+            if(status.getId()==-1)return false;  //检查
+           statusCache.get(status.getId()).setObject(status);
+           statusCache.get(status.getId()).increaseCount();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
      * 添加链接
      * @param relation
      * @return
@@ -175,6 +207,23 @@ public class CacheManager {
             if(relation.getId()!=-1)return false;  //检查
             relation.setId(IdManager.getIdManager().registerRelation(relation)); //注册ID
            relationCache.put(relation.getId(),new Prioritypack<Relation>(1,relation));
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     * 修改链接
+     * @param relation
+     * @return
+     */
+    public boolean modifyRelation(Relation relation){
+        try {
+            if(relation.getId()==-1)return false;  //检查
+           relationCache.get(relation.getId()).setObject(relation);
+           relationCache.get(relation.getId()).increaseCount();
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -326,6 +375,31 @@ public class CacheManager {
         }
     }
 
+
+    /**
+     * 根据Id删除信息
+     */
+     public boolean deleteinfo(int id , int type){
+        try {
+            switch (type){
+                case Component.COMPONENT:
+                    DAOmanager.getDaOmanager().getComponentDAO().deleteComponentById(id);
+                    break;
+                case Status.STATUS:
+                    DAOmanager.getDaOmanager().getStatusDAO().deleteStatus(id);
+                    break;
+                case Relation.RELATION:
+                    DAOmanager.getDaOmanager().getRelationDAO().deleRelation(id);
+                    break;
+            }
+
+            DAOmanager.getDaOmanager().getPreserveIdDAO().deleteID(type,id);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 
 
 

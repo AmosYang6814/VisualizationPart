@@ -3,27 +3,135 @@ package GlobalDataBean.DataBean;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+import DataPersistence.DataBean.Component.Component;
+import Logger.LogManager;
 
 /**
  * Created by Administrator on 2020/2/4.
  */
 
-public class UiComponent<T> {
 
-    public T getComponentObj() {
-        return componentObj;
+/**
+ * UIComponent中采用的是装饰模式，其中使用结构体ComponentType区别
+ * @param
+ */
+
+public class UiComponent {
+
+    /**
+     * -----------------------------------------------------------------------------------------
+     * 可见性
+     */
+
+    Visibility visible;
+    public Visibility getVisiblity() {
+        return visible;
     }
 
-    public void setComponentObj(T componentObj) {
+    public void setVisiblity(Visibility visible) {
+        this.visible = visible;
+    }
+
+
+
+    /**
+     * 组件名字
+     */
+    public String nearName;
+    public String getNearName() {
+        return nearName;
+    }
+
+    /**
+     * ---------------------------------------------------------------------------------------------------------
+     *
+     * 组件的类型的定义
+     */
+    public enum ComponentType{
+        complex,simple;
+    }
+
+    /**
+     * 组件类型
+     */
+    ComponentType componentType=ComponentType.simple;
+    public UiComponent(ComponentType componentType,String componentName) {
+        this.nearName=componentName;
+        setComponentType(componentType);
+    }
+
+    public ComponentType getComponentType() {
+        return componentType;
+    }
+    public void setComponentType(ComponentType componentType) {
+        this.componentType = componentType;
+        if(componentType.equals(ComponentType.complex))simpleComponent=new HashMap<>();
+    }
+    /**
+     * ---------------------------------------------------------------------------------------------------------------
+     *
+     * 包含的简单组件
+     */
+
+    public HashMap<Integer,UiComponent> simpleComponent;
+    /**
+     * 添加简单组件
+     * @param component
+     * @return
+     */
+    public boolean addSimpleComponent(UiComponent component){
+        try {
+            simpleComponent.put(component.getId(),component);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            LogManager.print("未指定组件类型：复杂组件？");
+            return false;
+        }
+    }
+
+    /**
+     * 获取简单组件
+     * @param id
+     * @return
+     */
+    public UiComponent getUiComponent( int id){
+        return simpleComponent.get(id);
+    }
+    public LinkedList<UiComponent> getSimpleUiComponent(){
+        LinkedList<UiComponent> list=new LinkedList<>();
+        for(Map.Entry<Integer,UiComponent> entry:simpleComponent.entrySet())list.add(entry.getValue());
+        return list;
+    }
+
+    /**
+     * -------------------------------------------------------------------------------------------------------
+     *
+     * 组件中内容的引用
+     */
+    Object componentObj;
+    /**
+     * 获取组件
+     * @return
+     */
+    public <T> T getComponentObj(Class<T> tClass) {
+        return (T)componentObj;
+    }
+
+    public void setComponentObj(Object componentObj) {
         this.componentObj = componentObj;
     }
 
     /**
-     * 组件的引用
+     * ----------------------------------------------------------------------------------------------------
+     *
+     * id的获取和确认
      */
-    T componentObj;
-
-    int id;
+    int id=-1;
 
     public int getId() {
         return id;
@@ -33,7 +141,10 @@ public class UiComponent<T> {
         this.id = id;
     }
 
+
+
     /**
+     * --------------------------------------------------------------------------------------------------------
      * 组件的属性引用
      */
     HashMap<String,Object> modifyAttributes=new HashMap<>();
@@ -44,9 +155,8 @@ public class UiComponent<T> {
      * @param values
      * @return
      */
-    public boolean AddNewSetting(String attributeName,Object[] values){
+    public boolean AddNewSetting(String attributeName,Object... values){
         try {
-            modifyAttributes.put(attributeName,values);
             return setAttribute(attributeName,values);
         } catch (Exception e) {
             e.printStackTrace();
@@ -71,7 +181,7 @@ public class UiComponent<T> {
      * @param values
      * @return
      */
-    public boolean setAttribute(String attributeName,Object[] values){
+    public boolean setAttribute(String attributeName,Object... values){
         Class componentClass=componentObj.getClass();
         Method method=null;
         try {
@@ -93,6 +203,10 @@ public class UiComponent<T> {
                     method.invoke(values[0],values[1],values[2]);
                     break;
                 default: return false;
+            }
+
+            for(int i=0;i<values.length;i++){
+                modifyAttributes.put(attributeName+"_*_"+i,values[i]);
             }
 
             return true;
@@ -130,5 +244,11 @@ public class UiComponent<T> {
         }
     }
 
+    /**
+     * 获取全部的属性值
+     */
+    public HashMap<String,Object> getAllAttribute(){
+        return (HashMap<String, Object>) modifyAttributes.clone();
+    }
 
 }

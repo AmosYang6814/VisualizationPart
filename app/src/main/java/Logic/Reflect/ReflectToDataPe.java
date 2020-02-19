@@ -7,6 +7,7 @@ package Logic.Reflect;
 import java.util.List;
 
 import DataPersistence.DataBean.Component.Component;
+import GlobalDataBean.DataBean.UiComponent;
 
 /**
  * 实现的功能：
@@ -17,25 +18,28 @@ public interface ReflectToDataPe {
      * 获取全部的组件
      * @return
      */
-    List<Component> getAllComponent();
+    List<UiComponent> getAllComponent () throws Exception;
 
     /**
      * 根据ID获取组件
      * @return
      */
-    Component getComponentById();
+    UiComponent getComponentById(int id) throws Exception;
 
     /**
      * 存储组件
-     * @param component
+     * @param uicomponent
      * @return
      */
-    boolean saveComponent(Component component);
+    boolean saveComponent(UiComponent uicomponent) throws Exception;
 
     /**
      * 删除组件
-     * @param component
+     * @param uicomponent
      * @return
      */
-    boolean deleteComponent(Component component);
+    boolean deleteComponent(UiComponent uicomponent) throws Exception;
+
+
+
 }
