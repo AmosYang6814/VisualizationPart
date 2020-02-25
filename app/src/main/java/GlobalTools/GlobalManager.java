@@ -18,5 +18,11 @@ public class GlobalManager {
         return IdManager.getIdManager().registerStatusInOtherLayer();
     }
 
+    /**
+     * 注册动作的id
+     */
+    public  static  int registerAction(){
+        return IdManager.getIdManager().registerRelationInOtherLayer();
+    }
 
 }

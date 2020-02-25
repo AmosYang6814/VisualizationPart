@@ -2,6 +2,7 @@ package Logic.LogicCore.StatusLogic;
 
 import java.util.LinkedList;
 
+import DataPersistence.DataBean.Status.Status;
 import GlobalTools.DataBean.Screen;
 import UI.Translate.StatusOp;
 
@@ -46,5 +47,10 @@ public class StatusServiceToUi implements StatusOp {
             e.printStackTrace();
             return false;
         }
+    }
+
+    @Override
+    public Screen getStatusById(int id) {
+        return statusChageCore.getStatusById(id);
     }
 }

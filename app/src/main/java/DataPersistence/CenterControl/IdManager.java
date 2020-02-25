@@ -105,7 +105,16 @@ public class IdManager {
      * @return
      */
     public int registerStatusInOtherLayer(){
-        for(int i=100;i<100000;i++)if(!statusId.contains(i))return i;
+        for(int i=10000;i<20000;i++)if(!statusId.contains(i))return i;
+        return -1;
+    }
+
+    /**
+     * 在其它层注册链接
+     * @return
+     */
+    public int  registerRelationInOtherLayer(){
+        for(int i=20000;i<30000;i++)if(!relationId.contains(i))return i;
         return -1;
     }
 

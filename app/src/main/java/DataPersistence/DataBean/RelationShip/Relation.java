@@ -25,6 +25,29 @@ public class Relation {
 
     int logic_id;
 
+    public int getRelationType() {
+        return RelationType;
+    }
+
+    public void setRelationType(int relationType) {
+        RelationType = relationType;
+    }
+
+    int RelationType;
+
+    /**
+     * 为动作类的StringGson描述，
+     */
+    String ActionDefine;
+
+    public String getActionDefine() {
+        return ActionDefine;
+    }
+
+    public void setActionDefine(String actionDefine) {
+        ActionDefine = actionDefine;
+    }
+
     public int getId() {
         return id;
     }

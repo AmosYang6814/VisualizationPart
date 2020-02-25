@@ -9,6 +9,7 @@ import java.util.List;
 
 import DataPersistence.CenterControl.CacheManager;
 import DataPersistence.DataBean.Component.Component;
+import DataPersistence.DataBean.RelationShip.Relation;
 import DataPersistence.DataBean.Status.Status;
 
 /**
@@ -47,6 +48,23 @@ public class ReadManager {
      */
     public static Status getStatusById(int id){
         return CacheManager.getCacheManager().getStatusById(id);
+    }
+
+    /**
+     * 获取所有的链接
+     * @return
+     */
+    public static List<Relation> getAllRelation(){
+        return CacheManager.getCacheManager().getAllRelation();
+    }
+
+    /**
+     * 根据Id获取所有的链接
+     * @param id
+     * @return
+     */
+    public static Relation getRelationById(int id){
+        return CacheManager.getCacheManager().getRelationById(id);
     }
 
 

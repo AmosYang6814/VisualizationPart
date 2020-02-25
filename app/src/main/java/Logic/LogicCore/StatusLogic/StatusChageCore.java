@@ -39,7 +39,7 @@ public class StatusChageCore implements StatusToDataPre {
      * @throws Exception
      */
     @Override
-    public Screen getStatusById(int id) throws Exception {
+    public Screen getStatusById(int id)  {
         Screen screen=new Screen();
         screen.setId(id);
 

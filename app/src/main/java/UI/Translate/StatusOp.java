@@ -6,6 +6,7 @@ package UI.Translate;
 
 import java.util.LinkedList;
 
+import DataPersistence.DataBean.Status.Status;
 import GlobalTools.DataBean.Screen;
 
 /**
@@ -33,5 +34,6 @@ public interface StatusOp {
      */
     public boolean deleteStatus(Screen screen);
 
+    public Screen getStatusById(int id);
 
 }
