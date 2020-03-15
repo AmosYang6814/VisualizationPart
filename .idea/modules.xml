@@ -3,9 +3,11 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/StudioProjects-VisualizationPart.iml" filepath="$PROJECT_DIR$/StudioProjects-VisualizationPart.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/StudioProjects-VisualizationPart-app.iml" filepath="$PROJECT_DIR$/app/StudioProjects-VisualizationPart-app.iml" group="VisualizationPart/app" />
       <module fileurl="file://$PROJECT_DIR$/VisualizationPart.iml" filepath="$PROJECT_DIR$/VisualizationPart.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/VisualizationPart-app.iml" filepath="$PROJECT_DIR$/app/VisualizationPart-app.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/yangzhen-StudioProjects-VisualizationPart.iml" filepath="$PROJECT_DIR$/yangzhen-StudioProjects-VisualizationPart.iml" group="VisualizationPart" />
     </modules>
   </component>
 </project>

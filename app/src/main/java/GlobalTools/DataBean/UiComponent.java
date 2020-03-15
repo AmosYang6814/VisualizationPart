@@ -40,6 +40,11 @@ public class UiComponent {
      * 组件名字
      */
     public String nearName;
+
+    public void setNearName(String nearName) {
+        this.nearName = nearName;
+    }
+
     public String getNearName() {
         return nearName;
     }
@@ -138,6 +143,24 @@ public class UiComponent {
     public void setId(int id) {
         this.id = id;
     }
+
+
+    /**
+     * -------------------------------------------------------------------------------------------------------
+     *
+     * 组件所属的分类
+     *
+     */
+
+    String classfiy="默认分类";
+    public String getClassfiy() {
+        return classfiy;
+    }
+
+    public void setClassfiy(String classfiy) {
+        this.classfiy = classfiy;
+    }
+
 
 
 
