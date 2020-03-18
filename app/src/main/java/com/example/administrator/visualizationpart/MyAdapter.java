@@ -1,6 +1,9 @@
 package com.example.administrator.visualizationpart;
 
 import android.content.Context;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,15 +14,19 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 public class MyAdapter extends BaseExpandableListAdapter {
+
+    private Handler MainActivity_handler=null;
     private Context mContext;
     private ArrayList<String> mGroup;
     private ArrayList<ArrayList<String>> mItemList;
     private final LayoutInflater mInflater;
-    public MyAdapter(Context context, ArrayList<String> group, ArrayList<ArrayList<String>> itemList){
+    public MyAdapter(Handler handler,Context context, ArrayList<String> group, ArrayList<ArrayList<String>> itemList){
         this.mContext = context;
         this.mGroup = group;
         this.mItemList = itemList;
         mInflater = LayoutInflater.from(context);
+
+        MainActivity_handler=handler;
     }
     //父项的个数
     @Override
@@ -78,6 +85,13 @@ public class MyAdapter extends BaseExpandableListAdapter {
             @Override
             public void onClick(View v) {
                 Toast.makeText(mContext,child,Toast.LENGTH_SHORT).show();
+
+                Message message=new Message();
+                message.what=MainActivity.FLAG_DRAW;
+                Bundle bundle=new Bundle();
+                bundle.putString("name",child);
+                message.setData(bundle);
+                MainActivity_handler.sendMessage(message);
             }
         });
         tvChild.setText(child);
