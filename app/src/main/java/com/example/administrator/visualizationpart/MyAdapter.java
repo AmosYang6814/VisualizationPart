@@ -75,7 +75,7 @@ public class MyAdapter extends BaseExpandableListAdapter {
     }
     //获取子项的view
     @Override
-    public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
+    public View getChildView(final int groupPosition, final int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
         final String child = mItemList.get(groupPosition).get(childPosition);
         if (convertView == null){
             convertView = mInflater.inflate(R.layout.component_list_child_view,parent,false);
@@ -90,6 +90,8 @@ public class MyAdapter extends BaseExpandableListAdapter {
                 message.what=MainActivity.FLAG_DRAW;
                 Bundle bundle=new Bundle();
                 bundle.putString("name",child);
+                bundle.putInt("childIndex",childPosition);
+                bundle.putInt("groupIndex",groupPosition);
                 message.setData(bundle);
                 MainActivity_handler.sendMessage(message);
             }

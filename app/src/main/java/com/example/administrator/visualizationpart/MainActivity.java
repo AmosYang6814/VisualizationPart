@@ -9,6 +9,7 @@ import android.support.constraint.ConstraintSet;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,37 +18,45 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.ImageButton;
+import android.widget.PopupMenu;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.lxj.xpopup.XPopup;
+import com.lxj.xpopup.interfaces.OnSelectListener;
+import com.lxj.xpopup.interfaces.XPopupCallback;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.zip.Inflater;
 
 import GlobalTools.DataBean.UiComponent;
 import UI.ComponentIndex.AbstractDataManager;
+import UI.ComponentIndex.DisplayComponent;
 import UI.ComponentIndex.componentListinterface;
 import UI.Draw.Draw;
 import UI.Draw.Size;
 
-public class MainActivity extends AppCompatActivity implements componentListinterface, Draw {
+public class MainActivity extends AppCompatActivity implements  Draw,componentListinterface<ExpandableListView> , DisplayComponent {
     public final static int FLAG_DRAW=101;
 
     public Handler handler=new Handler(){
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-
             Log.i("参数追踪",msg.getData().getString("name"));
-            testDraw();
+
+            //testDraw();
+            setClickToListPopMenu(componentList,msg.getData().getInt("groupIndex"),msg.getData().getInt("childIndex"));
         }
     };
 
     View backgroundPanel;
-
 
     ExpandableListView componentList;
     ConstraintLayout componentListPanel;
@@ -144,7 +153,6 @@ public class MainActivity extends AppCompatActivity implements componentListinte
                 displayAllComponent();
             }
         });
-
         componentList.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -192,9 +200,7 @@ public class MainActivity extends AppCompatActivity implements componentListinte
         view.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-
                     Log.i("点击追踪","Action:"+event.getAction()+"Time:"+event.getEventTime());
-
                     if(event.getAction()==MotionEvent.ACTION_DOWN){
                         v.setTag(new ActionTag(MotionEvent.ACTION_DOWN,event.getEventTime()));
                     }else if(event.getAction()==MotionEvent.ACTION_MOVE && ((ActionTag)v.getTag()).getStates()==MotionEvent.ACTION_DOWN){
@@ -215,6 +221,9 @@ public class MainActivity extends AppCompatActivity implements componentListinte
             }
         });
     }
+
+
+
 
     /**
      *------------------------------------------------------------------------------------------------------------------------------------
@@ -249,17 +258,15 @@ public class MainActivity extends AppCompatActivity implements componentListinte
      * 测试绘制方法
      */
     public void testDraw(){
+    }
 
-        Button new1=new Button(MainActivity.this);
-        new1.setText("测试");
-        ConstraintLayout.LayoutParams layoutParams=new ConstraintLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        layoutParams.topToTop=mainConstraintLayout.getId();
-        layoutParams.leftToLeft=mainConstraintLayout.getId();
-        layoutParams.rightToRight=mainConstraintLayout.getId();
-        layoutParams.topMargin=500;
 
-        registerViewToch(new1);
-        mainConstraintLayout.addView(new1,layoutParams);
+    /**
+     * 点击弹出属性菜单选项
+     * @param object
+     */
+    @Override
+    public void setClickToListPopMenu(ExpandableListView object,int... index) {
 
     }
 

@@ -5,10 +5,10 @@ package UI.ComponentIndex;
  */
 
 @FunctionalInterface
-public interface componentListinterface {
+public interface componentListinterface<T> {
     /**
      * 显示全部组件
      */
-    public void displayAllComponent();
+    public  void setClickToListPopMenu(T object,int... index);
 
 }

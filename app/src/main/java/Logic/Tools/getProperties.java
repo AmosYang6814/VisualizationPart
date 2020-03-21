@@ -23,7 +23,7 @@ public class getProperties {
      * 为第一个加载的类
      */
     getProperties(){
-        String[] propertiesPath={"/Users/amos/StudioProjects/VisualizationPart/app/src/main/java/properties.xml","/Users/amos/StudioProjects/VisualizationPart/app/src/main/java/Logic/properties.xml"};
+        String[] propertiesPath={"/Users/amos/StudioProjects/VisualizationPart/app/src/main/java/SimpleProperties.xml","/Users/amos/StudioProjects/VisualizationPart/app/src/main/java/Logic/SimpleProperties.xml"};
 
         for(String s:propertiesPath){
             if(isInit)break;

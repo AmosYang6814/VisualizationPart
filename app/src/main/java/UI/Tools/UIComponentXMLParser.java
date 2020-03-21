@@ -88,7 +88,7 @@ public class UIComponentXMLParser {
     }
 
     public static void main(String[] args){
-       new UIComponentXMLParser().parser("/Users/yangzhen/StudioProjects/VisualizationPart/app/src/main/java/UI/properties.xml");
+       new UIComponentXMLParser().parser("/Users/yangzhen/StudioProjects/VisualizationPart/app/src/main/java/UI/SimpleProperties.xml");
     }
 
 
