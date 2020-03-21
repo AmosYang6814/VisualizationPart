@@ -21,6 +21,7 @@ import android.widget.ImageButton;
 import android.widget.PopupMenu;
 import android.widget.Toast;
 
+import com.example.administrator.visualizationpart.testData.testManaActivity;
 import com.google.gson.Gson;
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.interfaces.OnSelectListener;
@@ -44,6 +45,7 @@ import UI.Draw.Size;
 
 public class MainActivity extends AppCompatActivity implements  Draw,componentListinterface<ExpandableListView> , DisplayComponent {
     public final static int FLAG_DRAW=101;
+    public final static int SET_ATTRIBUTE=1102;
 
     public Handler handler=new Handler(){
         @Override
@@ -235,12 +237,12 @@ public class MainActivity extends AppCompatActivity implements  Draw,componentLi
     }
 
     @Override
-    public boolean drawInscreen(List<Object> simpleComponent) {
+    public boolean drawInscreen(Object simpleComponent) {
         return false;
     }
 
     @Override
-    public boolean drawComplexScreen(List<ArrayList<Object>> complexComponent) {
+    public boolean drawComplexScreen(List<Object> complexComponent) {
         return false;
     }
 
@@ -267,10 +269,26 @@ public class MainActivity extends AppCompatActivity implements  Draw,componentLi
      */
     @Override
     public void setClickToListPopMenu(ExpandableListView object,int... index) {
+        ArrayList<AdapterData> data= testManaActivity.getComponentData();
 
+        Intent intent=new Intent(MainActivity.this,AttributeSettingPage.class);
+        intent.putExtra("methodData",data);
+        startActivityForResult(intent,SET_ATTRIBUTE);
     }
 
 
+    /**
+     * 界面跳转结果接收处理函数
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+
+    }
 }
 
 class ActionTag{

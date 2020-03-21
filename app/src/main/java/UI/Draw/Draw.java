@@ -23,14 +23,14 @@ public interface Draw {
      * @param simpleComponent
      * @return
      */
-    public boolean drawInscreen(List<Object> simpleComponent);
+    public boolean drawInscreen(Object simpleComponent);
 
     /**
      * 复杂组件的绘制
      * @param complexComponent
      * @return
      */
-    public boolean drawComplexScreen(List<ArrayList<Object>> complexComponent);
+    public boolean drawComplexScreen(List<Object> complexComponent);
 
     /**
      * 设置属性值
@@ -39,6 +39,7 @@ public interface Draw {
      * @param value
      * @return
      */
+
     public boolean SetAttribute(Object object,String attribute,Object value);
 
     /**

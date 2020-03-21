@@ -21,7 +21,7 @@ public abstract class Action {
         this.classType = classType;
     }
 
-    private ActionType action;/*动作的记录*/
+    private EventType action;/*动作的记录*/
     private ActionMean actionMean;/*动作的含义*/
 
     public int getScreenId() {
@@ -40,11 +40,11 @@ public abstract class Action {
         ComponentId = componentId;
     }
 
-    public ActionType getAction() {
+    public EventType getAction() {
         return action;
     }
 
-    public void setAction(ActionType action) {
+    public void setAction(EventType action) {
         this.action = action;
     }
 
@@ -56,7 +56,7 @@ public abstract class Action {
         this.actionMean = actionMean;
     }
 
-    public Action(int screenId, int componentId, ActionType action, ActionMean actionMean) {
+    public Action(int screenId, int componentId, EventType action, ActionMean actionMean) {
         ScreenId = screenId;
         ComponentId = componentId;
         this.action = action;

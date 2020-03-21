@@ -1,18 +1,18 @@
 package GlobalTools.DataBean.Action;
 
 /**
- * 用于描述动作类型
+ * 用于描述事件类型
  */
-public enum  ActionType {
+public enum EventType {
     ACTION_TYPE_CLICK,ACTION_TYPE_LONG_CLOCLK,ACTION_TYPE_LOSE_FOCUS,ACTION_TYPE_GET_FOCUS;
 
     /**
      * 检查动作是否属于该结构体
-     * @param actionType
+     * @param eventType
      * @return
      */
-    public static boolean CheckAction(ActionType actionType){
-        switch (actionType){
+    public static boolean CheckAction(EventType eventType){
+        switch (eventType){
             case ACTION_TYPE_CLICK:
             case ACTION_TYPE_LONG_CLOCLK:
             case ACTION_TYPE_GET_FOCUS:
@@ -41,7 +41,7 @@ public enum  ActionType {
      * @param index
      * @return
      */
-    public static ActionType getActionTypeByIndex(int index){
+    public static EventType getActionTypeByIndex(int index){
         switch (index){
             case 0:
                 return ACTION_TYPE_CLICK;
