@@ -24,6 +24,7 @@ import android.widget.Toast;
 import com.example.administrator.visualizationpart.testData.testManaActivity;
 import com.google.gson.Gson;
 import com.lxj.xpopup.XPopup;
+import com.lxj.xpopup.impl.AttachListPopupView;
 import com.lxj.xpopup.interfaces.OnSelectListener;
 import com.lxj.xpopup.interfaces.XPopupCallback;
 
@@ -36,14 +37,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.zip.Inflater;
 
+import GlobalTools.DataBean.Action.ActionMean;
+import GlobalTools.DataBean.Action.EventType;
 import GlobalTools.DataBean.UiComponent;
 import UI.ComponentIndex.AbstractDataManager;
 import UI.ComponentIndex.DisplayComponent;
 import UI.ComponentIndex.componentListinterface;
 import UI.Draw.Draw;
 import UI.Draw.Size;
+import UI.EvenHanding.ActionPopMenu;
+import UI.EvenHanding.EvenPopMenu;
 
-public class MainActivity extends AppCompatActivity implements  Draw,componentListinterface<ExpandableListView> , DisplayComponent {
+public class MainActivity extends AppCompatActivity implements  Draw<View>,componentListinterface<ExpandableListView> , DisplayComponent , ActionPopMenu<View>, EvenPopMenu<View> {
     public final static int FLAG_DRAW=101;
     public final static int SET_ATTRIBUTE=1102;
 
@@ -53,8 +58,8 @@ public class MainActivity extends AppCompatActivity implements  Draw,componentLi
             super.handleMessage(msg);
             Log.i("参数追踪",msg.getData().getString("name"));
 
-            //testDraw();
-            setClickToListPopMenu(componentList,msg.getData().getInt("groupIndex"),msg.getData().getInt("childIndex"));
+            testDraw();
+            //setClickToListPopMenu(componentList,msg.getData().getInt("groupIndex"),msg.getData().getInt("childIndex"));
         }
     };
 
@@ -66,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements  Draw,componentLi
     ImageButton componentflodButton;
 
     //动态组件添加
-    LinkedList<View> DymicsViews=new LinkedList<>();
+    LinkedList<View> dymicsViews=new LinkedList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -199,29 +204,47 @@ public class MainActivity extends AppCompatActivity implements  Draw,componentLi
      */
 
     private void registerViewToch(final View view){
+
+        //注册事件的拖动
         view.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                    Log.i("点击追踪","Action:"+event.getAction()+"Time:"+event.getEventTime());
-                    if(event.getAction()==MotionEvent.ACTION_DOWN){
-                        v.setTag(new ActionTag(MotionEvent.ACTION_DOWN,event.getEventTime()));
-                    }else if(event.getAction()==MotionEvent.ACTION_MOVE && ((ActionTag)v.getTag()).getStates()==MotionEvent.ACTION_DOWN){
 
-                        //移动代码
-                        ConstraintLayout.LayoutParams layoutParams=(ConstraintLayout.LayoutParams) v.getLayoutParams();
+               EventTag moveTag=( EventTag) view.getTag();
+                double x=event.getRawX();
+                double y=event.getRawY();
+                Log.d("参数追踪", "onTouch: "+event.getAction());
+                if (event.getAction()==MotionEvent.ACTION_DOWN){
+                    moveTag.latsX=x;
+                    moveTag.lastY=y;
+                }else if (event.getAction()==MotionEvent.ACTION_MOVE){
+                    double dx=x-moveTag.latsX;
+                    double dy=y-moveTag.lastY;
+                    Log.d("参数追踪", "onTouch: dx=="+dx+",dy=="+dy);
+//            startAnimation(dx,dy);
 
-                    }else if(event.getAction()==MotionEvent.ACTION_UP){
-                        v.setTag(new ActionTag(MotionEvent.ACTION_UP,event.getEventTime()));
-                    }
-                    if(event.getAction()==MotionEvent.ACTION_DOWN && ((ActionTag)v.getTag()).getStates()==
-                            MotionEvent.ACTION_UP && event.getEventTime()-((ActionTag)v.getTag()).getTime()<1000){
+                    //  moveMethod1(dx, dy);
+                    moveMethod2(view,dx, dy);
 
-                        //选定大小放缩代码
-                    }
-
+                    moveTag.latsX=x;
+                    moveTag.lastY=y;
+                }
                 return false;
             }
         });
+
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EventTag eventTag=(EventTag) v.getTag();
+                Log.d("双击追踪", ""+eventTag.lastClickTime);
+                if(System.currentTimeMillis()-eventTag.lastClickTime>1000) eventTag.lastClickTime=System.currentTimeMillis();
+                else {
+                    ClickToInvokeEvenPopMenu(v);
+                }
+            }
+        });
+
     }
 
 
@@ -229,7 +252,7 @@ public class MainActivity extends AppCompatActivity implements  Draw,componentLi
 
     /**
      *------------------------------------------------------------------------------------------------------------------------------------
-     * 绘制方法
+     * 绘制动态组件的方法
      */
     @Override
     public Size getScreenSize() {
@@ -251,15 +274,47 @@ public class MainActivity extends AppCompatActivity implements  Draw,componentLi
         return false;
     }
 
+    /**
+     * 组件移动的注册方法
+     * @param view
+     */
+    @Override
+    public void MoveComponent(View view) {
+
+
+    }
+
+
     @Override
     public boolean refresh() {
         return false;
+    }
+
+    //根据属性动画的原理
+    private void moveMethod2(View v,double dx, double dy) {
+
+        v.setTranslationX((float) (v.getTranslationX()+dx));
+        v.setTranslationY((float) (v.getTranslationY()+dy));
     }
 
     /**
      * 测试绘制方法
      */
     public void testDraw(){
+        Button new1=new Button(MainActivity.this);
+        new1.setText("测试");
+        ConstraintLayout.LayoutParams layoutParams=new ConstraintLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        layoutParams.topToTop=mainConstraintLayout.getId();
+        layoutParams.leftToLeft=mainConstraintLayout.getId();
+        layoutParams.rightToRight=mainConstraintLayout.getId();
+        layoutParams.topMargin=500;
+
+        registerViewToch(new1);
+        mainConstraintLayout.addView(new1,layoutParams);
+
+        new1.setTag(new EventTag());
+
+        this.dymicsViews.add(new1);
     }
 
 
@@ -289,17 +344,50 @@ public class MainActivity extends AppCompatActivity implements  Draw,componentLi
 
 
     }
+
+    /**
+     * ------------------------------------------------------------------------------------------------------------------------------------------------------------
+     * 添加动作事件
+     */
+
+
+    private AttachListPopupView attachListPopupView=null;
+    @Override
+    public void AttachActionPopMenu(View view) {
+        XPopup.Builder builder=new XPopup.Builder(MainActivity.this).atView(view);
+        builder.asAttachList(ActionMean.getSeletionDisplay(), null,-100,0, new OnSelectListener() {
+            @Override
+            public void onSelect(int position, String text) {
+                Log.i("悬浮菜单点击追踪",text);
+            }
+        }).show();
+
+    }
+
+    @Override
+    public void ClickToInvokeEvenPopMenu(final View target) {
+
+
+            XPopup.Builder builder=new XPopup.Builder(MainActivity.this).atView(target);
+             attachListPopupView=builder.asAttachList(EventType.getSelectionDisplay(), null,-100,0, new OnSelectListener() {
+                @Override
+                public void onSelect(int position, String text) {
+                    Log.i("悬浮菜单点击追踪",text);
+                    AttachActionPopMenu(target);
+                }
+            });
+            attachListPopupView.show();
+    }
+    /**
+     * ----------------------------------------------------------------------------------------------------------------------------------------------------------
+     */
 }
 
-class ActionTag{
-    int state;
-    long time;
-    ActionTag(int state,long Time){
-        this.state=state;
-        this.time=Time;
-    }
-    public int getStates(){return state;}
-    public long getTime(){return time;}
+class EventTag{
+    public double latsX,lastY;
+
+    public long lastClickTime=0;
+
 }
 
 

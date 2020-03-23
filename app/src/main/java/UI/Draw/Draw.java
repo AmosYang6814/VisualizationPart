@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * 绘制接口
  */
-public interface Draw {
+public interface Draw<T> {
 
     /**
      * 获取屏幕的长宽
@@ -42,6 +42,8 @@ public interface Draw {
 
     public boolean SetAttribute(Object object,String attribute,Object value);
 
+
+    public void MoveComponent(T view);
     /**
      * 刷新
      * @return
