@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
-import GlobalTools.DataBean.StatusNode;
+import GlobalTools.DataBean.UiComponent;
 
 /**
  * 状态记录
@@ -27,10 +27,20 @@ public class Status {
         this.id = id;
     }
 
+    private String Name;
+
+    public String getName() {
+        return Name;
+    }
+
+    public void setName(String name) {
+        Name = name;
+    }
+
     /**
      * 状态节点的集合
      */
-    LinkedList<StatusNode> nodes=new LinkedList<>();
+    LinkedList<UiComponent> nodes=new LinkedList<>();
 
 
     /**
@@ -38,24 +48,19 @@ public class Status {
      * @param componentId
      * @return
      */
-    public StatusNode getComponentStatus(int componentId){
+    public UiComponent getComponentStatus(int componentId){
        return nodes.get(componentId);
     }
 
     /**
      * 添加组件状态
-     * @param componentId
-     * @param changeAttribute
      * @return
      */
-    public boolean addComponentSatus(int componentId, HashMap<String,Object> changeAttribute){
+    public boolean addComponentSatus( UiComponent uiComponent){
         try {
-            StatusNode statusNode=new StatusNode();
-            statusNode.setComponentId(componentId);
-            for(Map.Entry<String,Object> entry:changeAttribute.entrySet())
-                statusNode.addChangeAttribute(entry.getKey(),entry.getValue());
 
-            nodes.add(statusNode);
+
+            nodes.add(uiComponent);
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -63,43 +68,21 @@ public class Status {
         }
     }
 
-    /**
-     * 修改属性值
-     * @param componentId
-     * @param changeAttribute
-     * @return
-     */
-    public boolean modifyComponentStatus(int componentId,HashMap<String,Object> changeAttribute ){
-        try {
 
-            StatusNode statusNode=null;
-            for(StatusNode statusNo:nodes){
-                if(statusNo.getComponentId()==componentId)statusNode=statusNo;
-            }
-            for(Map.Entry<String,Object> entry:changeAttribute.entrySet()) {
-                if(statusNode.containAttribute(entry.getKey()))statusNode.deleteAttributeValue(entry.getKey());
-                statusNode.addChangeAttribute(entry.getKey(), entry.getValue());
-            }
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
 
     /**
      * 删除属性值
-     * @param componentId
-     * @param attributeName
+
      * @return
      */
-    public boolean deleteSttribute(int componentId,String attributeName){
+    public boolean deleteUiComponent(int componentId){
         try {
-            StatusNode statusNode=null;
-            for(StatusNode statusNo:nodes){
-                if(statusNo.getComponentId()==componentId)statusNode=statusNo;
+
+            UiComponent uiComponent=null;
+            for(UiComponent statusNo:nodes){
+                if(statusNo.getId()==componentId)uiComponent=statusNo;
             }
-            statusNode.deleteAttributeValue(attributeName);
+            nodes.remove(uiComponent);
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -107,31 +90,14 @@ public class Status {
         }
     }
 
-    /**
-     * 删除模块
-     * @param componentId
-     * @return
-     */
-    public boolean deleteComponent(int componentId){
-        try {
-            StatusNode statusNode=null;
-            for(StatusNode statusNo:nodes){
-                if(statusNo.getComponentId()==componentId)statusNode=statusNo;
-            }
-            nodes.remove(statusNode);
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
+
 
     /**
      * 返回所有的节点
      * @return
      */
-    public LinkedList<StatusNode> getAllStatusNode(){
-        return (LinkedList<StatusNode>)nodes.clone();
+    public LinkedList<UiComponent> getAllStatusNode(){
+        return (LinkedList<UiComponent>)nodes.clone();
     }
 
     /**
@@ -139,7 +105,7 @@ public class Status {
      * @param attributes
      * @return
      */
-    public boolean setAttbutes(LinkedList<StatusNode> attributes){
+    public boolean setAttbutes(LinkedList<UiComponent> attributes){
         try {
             this.nodes=attributes;
             return true;

@@ -12,5 +12,4 @@ public class StatusManager {
      */
     HashMap<Integer, Action> actionMap=new HashMap<>();
 
-
 }

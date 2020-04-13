@@ -87,7 +87,7 @@ public class MyAdapter extends BaseExpandableListAdapter {
                 Toast.makeText(mContext,child,Toast.LENGTH_SHORT).show();
 
                 Message message=new Message();
-                message.what=MainActivity.FLAG_DRAW;
+                message.what= ContentActivity.FLAG_DRAW;
                 Bundle bundle=new Bundle();
                 bundle.putString("childName",child);
                 bundle.putString("groupName",mGroup.get(groupPosition));

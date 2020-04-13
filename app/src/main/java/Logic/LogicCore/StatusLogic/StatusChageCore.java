@@ -23,9 +23,8 @@ public class StatusChageCore implements StatusToDataPre {
         LinkedList<Status> statuses= (LinkedList<Status>) ReadManager.getAllStatus();
         LinkedList<Screen> result=new LinkedList<>();
         for(Status status:statuses){
-            screenTemp=new Screen();
+            screenTemp=new Screen(status.getName(),status.getAllStatusNode());
             screenTemp.setId(status.getId());
-            screenTemp.setAttbutes(status.getAllStatusNode());
             result.add(screenTemp);
         }
         return result;
@@ -40,11 +39,10 @@ public class StatusChageCore implements StatusToDataPre {
      */
     @Override
     public Screen getStatusById(int id)  {
-        Screen screen=new Screen();
-        screen.setId(id);
 
         Status status= ReadManager.getStatusById(id);
-        screen.setAttbutes(status.getAllStatusNode());
+        Screen screen=new Screen(status.getName(),status.getAllStatusNode());
+        screen.setId(id);
         return screen;
     }
 
