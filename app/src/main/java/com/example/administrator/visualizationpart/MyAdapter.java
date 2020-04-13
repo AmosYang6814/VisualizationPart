@@ -89,9 +89,8 @@ public class MyAdapter extends BaseExpandableListAdapter {
                 Message message=new Message();
                 message.what=MainActivity.FLAG_DRAW;
                 Bundle bundle=new Bundle();
-                bundle.putString("name",child);
-                bundle.putInt("childIndex",childPosition);
-                bundle.putInt("groupIndex",groupPosition);
+                bundle.putString("childName",child);
+                bundle.putString("groupName",mGroup.get(groupPosition));
                 message.setData(bundle);
                 MainActivity_handler.sendMessage(message);
             }

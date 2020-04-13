@@ -9,6 +9,6 @@ public interface componentListinterface<T> {
     /**
      * 显示全部组件
      */
-    public  void setClickToListPopMenu(T object,int... index);
+    public  void setClickToListPopMenu(T object,String...name);
 
 }

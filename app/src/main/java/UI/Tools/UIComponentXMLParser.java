@@ -1,170 +1,172 @@
 package UI.Tools;
 
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.io.InputStream;
+import java.util.LinkedList;
+import java.util.Random;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import UI.ComponentIndex.UiAttribute;
 
-import Logic.Tools.getProperties;
+import GlobalTools.DataBean.Attribute;
+import UI.Tools.domain.ClassifyItem;
+import UI.Tools.domain.Module;
+import UI.Tools.domain.SimpleComponentDescribe;
 
+/**
+ * 解析SimpleProperties文件
+ */
 public class UIComponentXMLParser {
-    public final static int CLASS_INTEGER=1;
-    public final static int CLASS_FLOART=2;
-    public final static int CLASS_DOUBLE=3;
-    public final static int CALSS_CHAR=4;
-    public final static int CALSS_STRING=5;
-    public final static int BOOLEAN=6;
-    public final static int CLASS_LONG=7;
 
-    public ArrayList<UiAttribute> parser(String path)  {
-
-        Element element= null;
-        try {
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder builder = factory.newDocumentBuilder();
-            Document document = builder.parse(path);
-            element = document.getDocumentElement();
-            NodeList nodeList=element.getElementsByTagName("module");
-
-            //System.out.println(nodeList.getLength());
-
-            ArrayList<UiAttribute> attributes=new ArrayList<>();
-
-            for(int i=0;i<nodeList.getLength();i++){
-                Node node=nodeList.item(i);
-                NodeList nodeList1=node.getChildNodes();
-                System.out.println("第"+i+"个节点孩子个数"+nodeList1.getLength());
-
-                for(int n=0;n<nodeList1.getLength();n++){
-                    //System.out.println(nodeList1.item(n).getNodeType());
-                    if(nodeList1.item(n).getNodeType()==Node.TEXT_NODE)continue;
-                    else {
-                        NamedNodeMap namedNodeMap=nodeList1.item(n).getAttributes();
-                            //参数个数判断
-                           int count=getParameterNumber(namedNodeMap.getNamedItem("Passingform").getNodeValue());
-                           HashMap<Integer,String> parameterType=getParametersType(namedNodeMap.getNamedItem("inputTypeform").getNodeValue());
-                           HashMap<Integer,Object> parameters=getParameters(namedNodeMap.getNamedItem("Passingform").getNodeValue(),parameterType);
+    /**
+     * xml文件对应的实体类
+     */
+    private SimpleComponentDescribe simpleComponentDescribe = new SimpleComponentDescribe();
 
 
+    public SimpleComponentDescribe parser(InputStream inputStream) throws ParserConfigurationException, IOException, SAXException {
+        //存放解析处理的组件信息
+        LinkedList<Module> moduleLinkedList = new LinkedList<Module>();
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        Document document = builder.parse(inputStream);
+        //解析module 标签
+        NodeList modules = document.getElementsByTagName("module");
+        for (int i = 0; i < modules.getLength(); i++) {
+            //存放解析处理的属性信息
+            LinkedList<Attribute> attributeLinkedList = new LinkedList<Attribute>();
+            Element module = (Element) modules.item(i);
+            //获取了第一层的属性module
+            Node module_className = module.getAttributes().getNamedItem("className");
+            Node module_displayName = module.getAttributes().getNamedItem("displayName");
+            Node module_classify = module.getAttributes().getNamedItem("classify");
+            //将解析的组件数据加入组件
+            Module CreateModule = new Module();
+            //设置分类信息的内容
+            ClassifyItem classifyItem = new ClassifyItem();
+            classifyItem.setId(module_classify!=null?module_classify.getNodeValue():"null");
+            //设置组件数据
+            //1.className
+            CreateModule.setClassName(module_className!=null?module_className.getNodeValue():"null");
+            //2. displayName
+            CreateModule.setDisplayName(module_displayName!=null?module_displayName.getNodeValue():"null");
+            //3.将分类信息加入生成组件
+            CreateModule.setClassifyItem(classifyItem);
+            //4.每个模块设置一个随机id，需要确定随机数种子，这样每次解析模块的id都是固定的
+            CreateModule.setModuleId(new Random(10).nextInt(50) + i * 2);
 
-                            //System.out.println(namedNodeMap.getNamedItem("Passingform").getNodeValue());
-                            UiAttribute attributesTemp=new UiAttribute(nodeList.item(i).getAttributes().getNamedItem("name").getNodeValue(),
-                                    namedNodeMap.getNamedItem("name").getNodeValue(),
-                                    namedNodeMap.getNamedItem("reflectMethod").getNodeValue(),count);
-                            attributesTemp.setParameters(parameters);
-                            attributesTemp.setParametersType(parameterType);
-                            attributes.add(attributesTemp);
+            // System.out.println("模块信息" + module_className + "" + module_displayName + " " + module_classify);
+            NodeList ModuleAttributes = module.getChildNodes();
 
-                            System.out.println(attributesTemp.toString());
+            //输出attribute 的属性
+            for (int j = 0; j < ModuleAttributes.getLength(); j++) {
+                if (ModuleAttributes.item(j).getNodeType() == Node.ELEMENT_NODE) {
+                    Node attribute_name = ModuleAttributes.item(j).getAttributes().getNamedItem("name");
+                    Node attribute_inputTypeForm = ModuleAttributes.item(j).getAttributes().getNamedItem("inputTypeForm");
+                    Node attribute_reflectMethod = ModuleAttributes.item(j).getAttributes().getNamedItem("reflectMethod");
+                    Node attribute_passingForm = ModuleAttributes.item(j).getAttributes().getNamedItem("passingForm");
+                    Node attribute_classForm=ModuleAttributes.item(j).getAttributes().getNamedItem("classForm");
 
+                    //设置获取的组件属性
+                    Attribute CreateAttribute = new Attribute();
+                    CreateAttribute.setName(attribute_name.getNodeValue());
+                    System.out.println("测试---"+attribute_name.getNodeValue());
 
-                    }
+                    System.out.println("测试---"+attribute_classForm==null?"attribute_classForm为空":attribute_classForm.getNodeValue());
+                    System.out.println("测试---"+attribute_inputTypeForm==null?"attribute_inputForm为空":attribute_inputTypeForm.getNodeValue());
+                    System.out.println("测试---"+attribute_passingForm==null?"attribute_passingForm为空":attribute_passingForm.getNodeValue());
 
+                    CreateAttribute=Attribute.ParaseDataFromString(CreateAttribute,attribute_passingForm.getNodeValue(),attribute_inputTypeForm.getNodeValue(),attribute_classForm.getNodeValue());
 
+                    CreateAttribute.setReflectMethod(attribute_reflectMethod.getNodeValue());
+                    attributeLinkedList.add(CreateAttribute);
+                    System.out.println("        属性信息" + attribute_name + attribute_inputTypeForm + attribute_passingForm + attribute_reflectMethod);
                 }
-
-
+                //将属性信息加入到模块
+                CreateModule.setAttributeLinkedList(attributeLinkedList);
             }
-            return attributes;
-        } catch (ParserConfigurationException e) {
-            return null;
-        } catch (SAXException e) {
-            return null;
-        } catch (IOException e) {
-            return null;
+            //将生成的模块封装到SimpleComponentDiscrible
+            moduleLinkedList.add(CreateModule);
         }
-    }
 
-    public static void main(String[] args){
-       new UIComponentXMLParser().parser("/Users/yangzhen/StudioProjects/VisualizationPart/app/src/main/java/UI/SimpleProperties.xml");
-    }
-
-
-    /**
-     * 根据名字获取节点
-     * @param nodeList
-     * @param name
-     * @return
-     */
-    private static Node getNoteByName(NodeList nodeList,String name){
-        for(int i=0;i<nodeList.getLength();i++){
-            if(nodeList.item(i).getNodeName().equals(name))return nodeList.item(i);
-        }
-        return null;
-    }
-
-    public int getParameterNumber(String model){
-        String content= model.substring(1,model.length()-1);
-        //System.out.println("提取子串："+content);
-        String[] parameter=content.split(",");
-        return parameter.length;
-    }
-
-
-    /**
-     * 获取在配置文件中，已经给出的参数，仅仅允许部分字面量
-     * @param model
-     * @param type
-     * @return
-     */
-    public HashMap<Integer,Object> getParameters(String model,HashMap<Integer,String> type){
-        String content=model.substring(1,model.length()-1);
-        String[] parameter=content.split(",");
-        HashMap<Integer,Object> objectHashMap=new HashMap<>();
-        try {
-            for(int i=0;i<parameter.length;i++){
-                if(parameter[i].equals("null")){
-                    objectHashMap.put(i,null);
-                    continue;
+        //classify 标签
+        NodeList classifies = document.getElementsByTagName("classify");
+        for (int k = 0; k < classifies.getLength(); k++) {
+            //存放解析处理的分类信息
+            LinkedList<ClassifyItem> classifyItemLinkedList = new LinkedList<ClassifyItem>();
+            Element classify = (Element) classifies.item(k);
+            //输出attribute 的属性
+            NodeList classifyItems = classify.getChildNodes();
+            for (int j = 0; j < classifyItems.getLength(); j++) {
+                if (classifyItems.item(j).getNodeType() == Node.ELEMENT_NODE) {
+                    Node Item_id = classifyItems.item(j).getAttributes().getNamedItem("id");
+                    String content = classifyItems.item(j).getFirstChild().getNodeValue();
+                    //  System.out.println("测试获取内容---"+content);
+                    //获取的分类信息封装到实体类
+                    ClassifyItem createClassifyItem = new ClassifyItem();
+                    createClassifyItem.setId(Item_id.getNodeValue());
+                    createClassifyItem.setContent(content);
+                    // 将分类item加入到classifyItemLinkedList
+                    classifyItemLinkedList.add(createClassifyItem);
+                    //     System.out.println("分类信息" + Item_id);
                 }
-                if(parameter[i].equals("#")){
-                    objectHashMap.put(i,null);
-                    continue;
-                }
-                switch (type.get(i)){
-                    case "int":objectHashMap.put(i,Integer.valueOf(parameter[i]));break;
-                    case "char":objectHashMap.put(i,parameter[i].charAt(0));break;
-                    case "long":objectHashMap.put(i,Long.valueOf(parameter[i]));break;
-                    case "boolean":objectHashMap.put(i,parameter[i].equals("true")?true:false);break;
-                    case "String":objectHashMap.put(i,parameter[i]);break;
-                    case "float":objectHashMap.put(i,Float.valueOf(parameter[i]));break;
-                    case "double":objectHashMap.put(i,Double.valueOf(parameter[i]));break;
-                    default:throw new ClassNotDefineException();
-                }
-
             }
-        } catch (ClassNotDefineException e) {
-            e.printStackTrace();
+
+
+            //将整个文件生成的分类信息加入到simpleComponentDiscrible
+            simpleComponentDescribe.setClassifyItemLinkedList(classifyItemLinkedList);
+            //将生成的模块封装到SimpleComponentDiscrible
+            simpleComponentDescribe.setModuleLinkedList(getContentById(classifyItemLinkedList, moduleLinkedList));
+
         }
-        return objectHashMap;
+        return simpleComponentDescribe;
     }
 
     /**
-     * 返回参数类型
-     * @param modelType
+     * 去除字符串的括号
+     * @param tempString
      * @return
      */
-    private HashMap<Integer,String> getParametersType(String modelType){
-        String content=modelType.substring(1,modelType.length()-1);
-        String[] parameter=content.split(",");
-        HashMap<Integer,String> objectHashMap=new HashMap<>();
+    private String removeBrackets(String tempString){
+        int start=tempString.indexOf("(")+1;
+        int end=tempString.indexOf(")");
+        return tempString.substring(start,end);
+    }
 
-        for(int i=0;i<parameter.length;i++){
-            objectHashMap.put(i,parameter[i]);
+    /**
+     * 根据分类id，找到分类内容,并设置模块对应的分类内容
+     *
+     * @return
+     */
+    private LinkedList<Module> getContentById(LinkedList<ClassifyItem> classifies, LinkedList<Module> modules) {
+        String classifyId = null;
+        String tempId = null;
+        for (Module module : modules) {
+            for (ClassifyItem classify : classifies) {
+
+                classifyId = module.getClassifyItem().getId();
+                tempId = classify.getId();
+                if (classifyId != null) {
+                    int start = classifyId.indexOf("@") + 1;
+                    classifyId = classifyId.substring(start).trim();
+                }
+                if (tempId != null) {
+                    tempId = tempId.trim();
+                }
+                //找到id相同的，可以设置
+                if (tempId.equals(classifyId)) {
+                    module.setClassifyItem(new ClassifyItem(classifyId, classify.getContent()));
+                }
+            }
         }
-        return objectHashMap;
+        return modules;
     }
 
 }

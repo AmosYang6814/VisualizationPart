@@ -9,7 +9,7 @@ public class UIComponentXMLParserTest {
     @Test
     public void parser() {
         UIComponentXMLParser uiComponentXMLParser=new UIComponentXMLParser();
-        uiComponentXMLParser.parser("/Users/yangzhen/StudioProjects/VisualizationPart/app/src/main/java/UI/SimpleProperties.xml");
+        uiComponentXMLParser.parser("/Users/yangzhen/StudioProjects/VisualizationPart/app/src/main/java/UI/SimpleProperties.bk.xml");
         uiComponentXMLParser.getParameterNumber("(#,null)");
     }
 }

@@ -7,6 +7,8 @@ package UI.Draw;
 import java.util.ArrayList;
 import java.util.List;
 
+import GlobalTools.DataBean.UiComponent;
+
 /**
  * 绘制接口
  */
@@ -23,24 +25,8 @@ public interface Draw<T> {
      * @param simpleComponent
      * @return
      */
-    public boolean drawInscreen(Object simpleComponent);
+    public boolean drawInscreen(UiComponent simpleComponent);
 
-    /**
-     * 复杂组件的绘制
-     * @param complexComponent
-     * @return
-     */
-    public boolean drawComplexScreen(List<Object> complexComponent);
-
-    /**
-     * 设置属性值
-     * @param object
-     * @param attribute
-     * @param value
-     * @return
-     */
-
-    public boolean SetAttribute(Object object,String attribute,Object value);
 
 
     public void MoveComponent(T view);

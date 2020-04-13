@@ -99,7 +99,7 @@ public class ReflectCore implements ReflectToDataPe {
             if(uicomponent.getComponentType().equals(UiComponent.ComponentType.simple)){
                 SimpleComponent component=new SimpleComponent();
                 component.setNearName(uicomponent.getNearName());
-                component.setComponentClassName(uicomponent.getComponentObj(Object.class).getClass().getName());
+                component.setComponentClassName(uicomponent.getComponentObj().getClass().getName());
                 component.setVisiblity(uicomponent.getVisiblity());
                 component.setId(uicomponent.getId());
                 /*添加属性*/
@@ -118,7 +118,7 @@ public class ReflectCore implements ReflectToDataPe {
                 for(UiComponent simpleUiComponent:uicomponent.getSimpleUiComponent()){
                     SimpleComponent component=new SimpleComponent();
                     component.setNearName(simpleUiComponent.getNearName());
-                    component.setComponentClassName(simpleUiComponent.getComponentObj(Object.class).getClass().getName());
+                    component.setComponentClassName(simpleUiComponent.getComponentObj().getClass().getName());
                     component.setVisiblity(simpleUiComponent.getVisiblity());
                      /*添加属性*/
                     for(Map.Entry<String,Object> entry:simpleUiComponent.getAllAttribute().entrySet()){

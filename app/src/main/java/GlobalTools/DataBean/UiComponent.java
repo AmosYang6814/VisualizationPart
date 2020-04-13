@@ -1,12 +1,16 @@
 package GlobalTools.DataBean;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import Logger.LogManager;
+import UI.Tools.domain.Module;
 
 /**
  * Created by Administrator on 2020/2/4.
@@ -62,10 +66,17 @@ public class UiComponent {
      * 组件类型
      */
     ComponentType componentType=ComponentType.simple;
-    public UiComponent(ComponentType componentType,String componentName) {
-        this.nearName=componentName;
+
+
+    public UiComponent(ComponentType componentType,String className) {
+        try {
+            this.componentClass=Class.forName(className);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
         setComponentType(componentType);
     }
+
 
     public ComponentType getComponentType() {
         return componentType;
@@ -117,16 +128,35 @@ public class UiComponent {
      * 组件中内容的引用
      */
     Object componentObj;
+    Class componentClass;
+
+    /**
+     * 组件中包含的类指针
+     * @return
+     */
+    public Class getComponentClass() { return componentClass; }
+    public void setComponentClass(Class componentClass) { this.componentClass = componentClass; }
     /**
      * 获取组件
      * @return
      */
-    public <T> T getComponentObj(Class<T> tClass) {
-        return (T)componentObj;
+    public Object getComponentObj() {
+        if(componentObj==null)reflect(componentClass);
+        return componentObj;
     }
 
     public void setComponentObj(Object componentObj) {
         this.componentObj = componentObj;
+    }
+
+    private void reflect(Class componentClass){
+        try {
+            componentObj=componentClass.newInstance();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -169,6 +199,10 @@ public class UiComponent {
      * 组件的属性引用
      */
     HashMap<String,Object> modifyAttributes=new HashMap<>();
+    List<Attribute> attributesDefines=new ArrayList<>();
+
+    public void addAttributeDefine(String methodName,String...type){
+    }
 
     /**
      * 添加新的设置
@@ -272,4 +306,40 @@ public class UiComponent {
         return (HashMap<String, Object>) modifyAttributes.clone();
     }
 
+    /**
+     * 获取全部已经定义的属性
+     */
+
+    public List<Attribute> getAllDefineAttribute(){
+        return attributesDefines;
+    }
+
+    /**
+     * 添加定义的属性
+     * @param attribute
+     * @return
+     */
+    public boolean addDefineAttribute(Attribute attribute){
+        try {
+            attributesDefines.add(attribute);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean clearAttributes(){
+        try {
+            attributesDefines.clear();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
+
 }
+

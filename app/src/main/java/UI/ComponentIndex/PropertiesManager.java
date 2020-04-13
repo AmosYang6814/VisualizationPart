@@ -28,7 +28,6 @@ public class PropertiesManager {
      * 从配置文件中获取数据
      */
     private static void getDataFromProperties(){
-
     }
 
 

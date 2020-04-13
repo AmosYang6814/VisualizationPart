@@ -21,6 +21,7 @@ import android.widget.ImageButton;
 import android.widget.PopupMenu;
 import android.widget.Toast;
 
+import com.example.administrator.visualizationpart.Tools.ActivityTools;
 import com.example.administrator.visualizationpart.testData.testManaActivity;
 import com.google.gson.Gson;
 import com.lxj.xpopup.XPopup;
@@ -37,41 +38,50 @@ import java.util.List;
 import java.util.Map;
 import java.util.zip.Inflater;
 
+import GlobalTools.DataBean.Action.Action;
 import GlobalTools.DataBean.Action.ActionMean;
 import GlobalTools.DataBean.Action.EventType;
+import GlobalTools.DataBean.Attribute;
 import GlobalTools.DataBean.UiComponent;
+import GlobalTools.GlobalManager;
 import UI.ComponentIndex.AbstractDataManager;
 import UI.ComponentIndex.DisplayComponent;
 import UI.ComponentIndex.componentListinterface;
 import UI.Draw.Draw;
 import UI.Draw.Size;
 import UI.EvenHanding.ActionPopMenu;
+import UI.EvenHanding.BuilderAction;
 import UI.EvenHanding.EvenPopMenu;
+import UI.UICenterCtrol.UIGlobalManager;
 
-public class MainActivity extends AppCompatActivity implements  Draw<View>,componentListinterface<ExpandableListView> , DisplayComponent , ActionPopMenu<View>, EvenPopMenu<View> {
+public class MainActivity extends AppCompatActivity implements  Draw<View>,componentListinterface<ExpandableListView> , DisplayComponent , ActionPopMenu<View>, EvenPopMenu<View>, BuilderAction<View> {
     public final static int FLAG_DRAW=101;
     public final static int SET_ATTRIBUTE=1102;
 
+    private final MainActivityLogic mainActivityLogic=new MainActivityLogic();
+    /**
+     * 当前Id为测试id
+     */
+    public final int screenId= 101; //注册屏幕的id
     public Handler handler=new Handler(){
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            Log.i("参数追踪",msg.getData().getString("name"));
+            Log.i("参数追踪",msg.getData().getString("childName"));
 
-            testDraw();
-            //setClickToListPopMenu(componentList,msg.getData().getInt("groupIndex"),msg.getData().getInt("childIndex"));
+            //testDraw();
+           setClickToListPopMenu(componentList,msg.getData().getString("childName"),msg.getData().getString("groupName"));
         }
     };
 
     View backgroundPanel;
-
     ExpandableListView componentList;
     ConstraintLayout componentListPanel;
     ConstraintLayout mainConstraintLayout;
     ImageButton componentflodButton;
 
     //动态组件添加
-    LinkedList<View> dymicsViews=new LinkedList<>();
+    LinkedList<UiComponent> dymicsViews=new LinkedList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,10 +132,9 @@ public class MainActivity extends AppCompatActivity implements  Draw<View>,compo
         LinkedList<UiComponent> result= AbstractDataManager.getAbstractDataManager().getAllcomponent();
 
 
-
         /*按照标签进行分类*/
         HashSet<String> group=new HashSet<>();
-        for(UiComponent uiComponent:result)group.add(uiComponent.getClassfiy());
+        group.addAll(UIGlobalManager.getDataManager().getAllClassfy());
 
         /*获取各个分类，及其子项目*/
         HashMap<String,ArrayList<String>> hashMap=new HashMap();
@@ -141,6 +150,7 @@ public class MainActivity extends AppCompatActivity implements  Draw<View>,compo
         for(Map.Entry<String,ArrayList<String>> entry:hashMap.entrySet()){
             childtemp.add(entry.getValue());
         }
+
         MyAdapter myAdapter=new MyAdapter(handler,this,groupTemp,childtemp);
 
         componentList.setAdapter(myAdapter);
@@ -259,19 +269,35 @@ public class MainActivity extends AppCompatActivity implements  Draw<View>,compo
         return null;
     }
 
-    @Override
-    public boolean drawInscreen(Object simpleComponent) {
-        return false;
-    }
 
+    /**
+     * 绘制动态组件
+     * @param simpleComponent
+     * @return
+     */
     @Override
-    public boolean drawComplexScreen(List<Object> complexComponent) {
-        return false;
-    }
+    public boolean drawInscreen(UiComponent simpleComponent) {
+        try {
 
-    @Override
-    public boolean SetAttribute(Object object, String attribute, Object value) {
-        return false;
+            simpleComponent=mainActivityLogic.InitAndSetAttribute(this,simpleComponent);
+
+            View newView= (View)simpleComponent.getComponentObj();
+            simpleComponent.setComponentObj(newView);
+            ConstraintLayout.LayoutParams layoutParams=new ConstraintLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            layoutParams.topToTop=mainConstraintLayout.getId();
+            layoutParams.leftToLeft=mainConstraintLayout.getId();
+            layoutParams.rightToRight=mainConstraintLayout.getId();
+            layoutParams.topMargin=500;
+
+            registerViewToch(newView);
+            mainConstraintLayout.addView(newView,layoutParams);
+
+            newView.setTag(new EventTag());
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     /**
@@ -297,44 +323,24 @@ public class MainActivity extends AppCompatActivity implements  Draw<View>,compo
         v.setTranslationY((float) (v.getTranslationY()+dy));
     }
 
-    /**
-     * 测试绘制方法
-     */
-    public void testDraw(){
-        Button new1=new Button(MainActivity.this);
-        new1.setText("测试");
-        ConstraintLayout.LayoutParams layoutParams=new ConstraintLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        layoutParams.topToTop=mainConstraintLayout.getId();
-        layoutParams.leftToLeft=mainConstraintLayout.getId();
-        layoutParams.rightToRight=mainConstraintLayout.getId();
-        layoutParams.topMargin=500;
-
-        registerViewToch(new1);
-        mainConstraintLayout.addView(new1,layoutParams);
-
-        new1.setTag(new EventTag());
-
-        this.dymicsViews.add(new1);
-    }
-
 
     /**
      * 点击弹出属性菜单选项
      * @param object
      */
     @Override
-    public void setClickToListPopMenu(ExpandableListView object,int... index) {
-        ArrayList<AdapterData> data= testManaActivity.getComponentData();
+    public void setClickToListPopMenu(ExpandableListView object,String... name) {
+        Intent intent=new Intent(this,AttributeSettingPage.class);
+        intent.putExtra("groupName",name[1]);
+        intent.putExtra("childName",name[0]);
 
-        Intent intent=new Intent(MainActivity.this,AttributeSettingPage.class);
-        intent.putExtra("methodData",data);
         startActivityForResult(intent,SET_ATTRIBUTE);
     }
 
 
     /**
-     * 界面跳转结果接收处理函数
-     * @param requestCode
+     * 界面跳转结果接收处理,并绘制图形
+     * * @param requestCode
      * @param resultCode
      * @param data
      */
@@ -342,7 +348,38 @@ public class MainActivity extends AppCompatActivity implements  Draw<View>,compo
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+        switch (requestCode){
+            case SET_ATTRIBUTE:
+                if(resultCode==AttributeSettingPage.RESULT_SUCCESS){
+                    LoadData(data);
+                }
+        }
+    }
 
+
+
+    private void LoadData(Intent data){
+
+        if(GlobalApplication.Debug){
+            Log.i("MainActivity_laodData","得到回传参数");
+        }
+        ArrayList<String> attributeString=data.getStringArrayListExtra("attribute");
+
+        ArrayList<Attribute> attributes=new ArrayList<>();
+        Gson g=new Gson();
+
+        for(int i=0;i<attributeString.size();i++){
+            attributes.add(g.fromJson(attributeString.get(i),Attribute.class));
+        }
+
+        UiComponent newView=AbstractDataManager.getAbstractDataManager().findComponentById(data.getIntExtra("componentid",0));
+
+        newView.clearAttributes();
+
+        for(Attribute attribute:attributes){
+            newView.addDefineAttribute(attribute);
+        }
+        drawInscreen(newView);
     }
 
     /**
@@ -353,7 +390,7 @@ public class MainActivity extends AppCompatActivity implements  Draw<View>,compo
 
     private AttachListPopupView attachListPopupView=null;
     @Override
-    public void AttachActionPopMenu(View view) {
+    public void AttachActionPopMenu(View view,int eventPosition) {
         XPopup.Builder builder=new XPopup.Builder(MainActivity.this).atView(view);
         builder.asAttachList(ActionMean.getSeletionDisplay(), null,-100,0, new OnSelectListener() {
             @Override
@@ -361,22 +398,33 @@ public class MainActivity extends AppCompatActivity implements  Draw<View>,compo
                 Log.i("悬浮菜单点击追踪",text);
             }
         }).show();
-
     }
 
     @Override
     public void ClickToInvokeEvenPopMenu(final View target) {
-
 
             XPopup.Builder builder=new XPopup.Builder(MainActivity.this).atView(target);
              attachListPopupView=builder.asAttachList(EventType.getSelectionDisplay(), null,-100,0, new OnSelectListener() {
                 @Override
                 public void onSelect(int position, String text) {
                     Log.i("悬浮菜单点击追踪",text);
-                    AttachActionPopMenu(target);
+                    AttachActionPopMenu(target,position);
                 }
             });
             attachListPopupView.show();
+    }
+
+    /**
+     * 构造并添加动作
+     * @param view
+     * @param eventPosition
+     * @param actionPosition
+     */
+    public void builderandAddAction(View view,int eventPosition,int actionPosition){
+        EventTag eventTag=(EventTag) view.getTag();
+        Action action=new Action(screenId,eventTag.componentId,EventType.getActionTypeByIndex(eventPosition),ActionMean.getActionMeanByIndex(actionPosition));
+        eventTag.actions.add(action);
+        UIGlobalManager.getEvenManager().addAction(screenId,action);
     }
     /**
      * ----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -384,10 +432,10 @@ public class MainActivity extends AppCompatActivity implements  Draw<View>,compo
 }
 
 class EventTag{
+    int componentId=0;
     public double latsX,lastY;
-
     public long lastClickTime=0;
-
+    ArrayList<Action> actions=new ArrayList<>(4);
 }
 
 

@@ -29,17 +29,16 @@
             <attribute name="输入"
                 inputTypeform="(String)"
                 reflectMethod="setText"
-                ClassForm="(CharSequence)"
-                Passingform="(#)"/>
+                Passingform="(#,null)"/>
         </module>
 
         <module name="android.widget.Button"
                 dispalyName="按钮"
                 classfiy="@test1">
             <attribute name="按钮显示"
-                inputTypeform="(String,String)"
+                inputTypeform="(String)"
                 reflectMethod="setText"
-                Passingform="(#,#)"/>
+                Passingform="(#)"/>
 
             <attribute name="背景颜色"
                 inputTypeform="(Color)"
@@ -53,6 +52,6 @@
     </AttributeDefine>
 
     <classfiy>
-        <item id="test1">常用文本</item>
+        <item id="test1">常用文本 </item>
     </classfiy>
 </UI>

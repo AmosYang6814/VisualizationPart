@@ -3,7 +3,7 @@ package GlobalTools.DataBean.Action;
 /**
  * 描述动作。描述动作，从何来，什么方式，
  */
-public abstract class Action {
+public  class Action {
     public final static int ACTIONTYPE_MEAN_JUMP=171;
     public final static int ACTIONTYPE_MEAN_ACTIVE=172;
     public final static int ACTIONTYPE_MEAN_CHANGE=173;
