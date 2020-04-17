@@ -5,5 +5,9 @@ package UI.ScreenStatus;
  */
 public interface ScreenOprate {
 
-    public void AddNewSreen();
+
+    /**
+     * 通知屏幕数量发生改变
+     */
+    public void notifidScreenNumberChaged(String addName);
 }

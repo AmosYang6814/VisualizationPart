@@ -1,17 +1,18 @@
 package UI.EvenHanding;
 
+import java.lang.ref.SoftReference;
 import java.util.HashMap;
 import java.util.LinkedList;
 
 import GlobalTools.DataBean.Action.Action;
+import GlobalTools.FunctionClassXMLParaser;
 
 /**
  * 时间管理器，主要管理事件的点击之后的处理，进行封装成Action和Event对象
  */
 public class EvenManager {
 
-
-
+    private BuilderAction builderAction=FunctionClassXMLParaser.<BuilderAction>getClassName("ActionBuilder");
     /**
      * 根据屏幕id添加的动作链
      */
@@ -37,5 +38,9 @@ public class EvenManager {
         }
     }
 
+    public BuilderAction getBuilderAction(){
+        if(builderAction==null)builderAction=builderAction=FunctionClassXMLParaser.<BuilderAction>getClassName("ActionBuilder");
+        return builderAction;
+    }
 
 }

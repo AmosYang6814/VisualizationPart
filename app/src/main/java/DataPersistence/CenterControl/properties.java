@@ -6,6 +6,4 @@ package DataPersistence.CenterControl;
 
 public class properties {
     String filepath;
-
-
 }

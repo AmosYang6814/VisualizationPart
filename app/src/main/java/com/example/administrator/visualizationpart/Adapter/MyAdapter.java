@@ -1,4 +1,4 @@
-package com.example.administrator.visualizationpart;
+package com.example.administrator.visualizationpart.Adapter;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -11,6 +11,9 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.administrator.visualizationpart.Activity.ContentFragment;
+import com.example.administrator.visualizationpart.R;
+
 import java.util.ArrayList;
 
 public class MyAdapter extends BaseExpandableListAdapter {
@@ -20,12 +23,33 @@ public class MyAdapter extends BaseExpandableListAdapter {
     private ArrayList<String> mGroup;
     private ArrayList<ArrayList<String>> mItemList;
     private final LayoutInflater mInflater;
+
+    public MyAdapter(Handler handler,Context context, String[] group, ArrayList<ArrayList<String>> itemList){
+        ArrayList<String> list=new ArrayList<>();
+        for(int i=0;i<group.length;i++)list.add(group[i]);
+
+        this.mContext = context;
+        this.mGroup = list;
+        this.mItemList = itemList;
+        mInflater = LayoutInflater.from(context);
+        MainActivity_handler=handler;
+    }
+
     public MyAdapter(Handler handler,Context context, ArrayList<String> group, ArrayList<ArrayList<String>> itemList){
         this.mContext = context;
         this.mGroup = group;
         this.mItemList = itemList;
         mInflater = LayoutInflater.from(context);
+        MainActivity_handler=handler;
+    }
 
+
+
+    public MyAdapter(Handler handler,Context context,LayoutInflater layoutInflater, ArrayList<String> group, ArrayList<ArrayList<String>> itemList){
+        this.mContext = context;
+        this.mGroup = group;
+        this.mItemList = itemList;
+        mInflater = layoutInflater;
         MainActivity_handler=handler;
     }
     //父项的个数
@@ -36,6 +60,8 @@ public class MyAdapter extends BaseExpandableListAdapter {
     //某个父项的子项的个数
     @Override
     public int getChildrenCount(int groupPosition) {
+
+        if(mItemList.size()<=groupPosition)return 0;
         return mItemList.get(groupPosition).size();
     }
     //获得某个父项
@@ -87,7 +113,7 @@ public class MyAdapter extends BaseExpandableListAdapter {
                 Toast.makeText(mContext,child,Toast.LENGTH_SHORT).show();
 
                 Message message=new Message();
-                message.what= ContentActivity.FLAG_DRAW;
+                message.what= ContentFragment.FLAG_DRAW;
                 Bundle bundle=new Bundle();
                 bundle.putString("childName",child);
                 bundle.putString("groupName",mGroup.get(groupPosition));
@@ -102,6 +128,10 @@ public class MyAdapter extends BaseExpandableListAdapter {
     @Override
     public boolean isChildSelectable(int groupPosition, int childPosition) {
         return true;
+    }
+
+    public ArrayList<ArrayList<String>> getmItemList(){
+        return mItemList;
     }
 }
 

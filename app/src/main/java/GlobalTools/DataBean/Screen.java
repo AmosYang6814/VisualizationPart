@@ -94,7 +94,23 @@ public class Screen<T> {
     private String SreenName;
     private T ScreenObj;
 
-    public Screen(String screenName,T ScreenObj){
+    public String getSreenName() {
+        return SreenName;
+    }
+
+    public void setSreenName(String sreenName) {
+        SreenName = sreenName;
+    }
+
+    public T getScreenObj() {
+        return ScreenObj;
+    }
+
+    public void setScreenObj(T screenObj) {
+        ScreenObj = screenObj;
+    }
+
+    public Screen(String screenName, T ScreenObj){
         this.SreenName=screenName;
         this.ScreenObj=ScreenObj;
         this.setId(GlobalManager.registerScreen());

@@ -77,17 +77,11 @@ public class UIComponentXMLParser {
                     //设置获取的组件属性
                     Attribute CreateAttribute = new Attribute();
                     CreateAttribute.setName(attribute_name.getNodeValue());
-                    System.out.println("测试---"+attribute_name.getNodeValue());
-
-                    System.out.println("测试---"+attribute_classForm==null?"attribute_classForm为空":attribute_classForm.getNodeValue());
-                    System.out.println("测试---"+attribute_inputTypeForm==null?"attribute_inputForm为空":attribute_inputTypeForm.getNodeValue());
-                    System.out.println("测试---"+attribute_passingForm==null?"attribute_passingForm为空":attribute_passingForm.getNodeValue());
 
                     CreateAttribute=Attribute.ParaseDataFromString(CreateAttribute,attribute_passingForm.getNodeValue(),attribute_inputTypeForm.getNodeValue(),attribute_classForm.getNodeValue());
 
                     CreateAttribute.setReflectMethod(attribute_reflectMethod.getNodeValue());
                     attributeLinkedList.add(CreateAttribute);
-                    System.out.println("        属性信息" + attribute_name + attribute_inputTypeForm + attribute_passingForm + attribute_reflectMethod);
                 }
                 //将属性信息加入到模块
                 CreateModule.setAttributeLinkedList(attributeLinkedList);

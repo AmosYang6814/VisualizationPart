@@ -1,4 +1,4 @@
-package com.example.administrator.visualizationpart;
+package com.example.administrator.visualizationpart.Activity;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -11,12 +11,13 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
+import com.example.administrator.visualizationpart.Adapter.AttributeAdapter;
+import com.example.administrator.visualizationpart.Global.GlobalApplication;
+import com.example.administrator.visualizationpart.R;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import GlobalTools.DataBean.Attribute;
 import GlobalTools.DataBean.UiComponent;

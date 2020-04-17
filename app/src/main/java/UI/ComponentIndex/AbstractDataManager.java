@@ -2,7 +2,7 @@ package UI.ComponentIndex;
 
 import android.util.Log;
 
-import com.example.administrator.visualizationpart.GlobalApplication;
+import com.example.administrator.visualizationpart.Global.GlobalApplication;
 import com.example.administrator.visualizationpart.Tools.StringTools;
 
 import java.util.ArrayList;

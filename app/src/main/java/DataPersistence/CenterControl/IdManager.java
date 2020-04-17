@@ -19,7 +19,7 @@ public class IdManager {
     /**
      * ID管理器的唯一的实例
      */
-    static IdManager idManager=new IdManager();
+    static IdManager idManager;
 
     /**
      * 组件的id
@@ -97,6 +97,7 @@ public class IdManager {
 
 
     public static IdManager getIdManager() {
+        if(idManager==null)idManager=new IdManager();
         return idManager;
     }
 

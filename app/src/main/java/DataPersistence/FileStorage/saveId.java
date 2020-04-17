@@ -19,6 +19,9 @@ public class saveId implements PreserveId {
     final String COMPONENT_ID_FILE=PACKAGEFILE+"componentId.data";
     final String RELATION_ID_FILE=PACKAGEFILE+"relationId.data";
     final String STATUS_ID_FILE=PACKAGEFILE+"statusId.data";
+
+
+
     @Override
     public boolean addNewID(int type, int id) {
         try {
@@ -80,12 +83,28 @@ public class saveId implements PreserveId {
     }
 
 
+    /**
+     * 初始化文件夹
+     * @return
+     */
+    @Override
+    public boolean InitFile() {
+        if(!DocumentTool.isFolderExists(PACKAGEFILE)){
+            DocumentTool.addFolder(PACKAGEFILE);
+        }
+        if(!DocumentTool.isFileExists(COMPONENT_ID_FILE))DocumentTool.addFile(COMPONENT_ID_FILE);
+        if(!DocumentTool.isFileExists(STATUS_ID_FILE))DocumentTool.addFile(STATUS_ID_FILE);
+        if(!DocumentTool.isFileExists(RELATION_ID_FILE))DocumentTool.addFile(RELATION_ID_FILE);
+        return false;
+    }
+
 
     /**
      * 获取全部内容
      * @param fileName
      * @return
      */
+
     private String[] getFileContent(String fileName) throws Exception{
         String[] datas=DocumentTool.readFileContent(fileName).split(DocumentTool.OUT_SPLIT);
         return datas;
@@ -113,6 +132,8 @@ public class saveId implements PreserveId {
         }
 
         for(int i=0;i<datas.length;i++){
+
+            if(datas[i].length()==0)continue;
             hashSet.add(Integer.valueOf(datas[i]));
         }
         return hashSet;
@@ -157,6 +178,8 @@ public class saveId implements PreserveId {
      * @param datas
      * @return
      */
+
+
     private String ChangeToString(String[] datas){
         StringBuffer stringBuffer=new StringBuffer("");
         for(int i=0;i<datas.length;i++){

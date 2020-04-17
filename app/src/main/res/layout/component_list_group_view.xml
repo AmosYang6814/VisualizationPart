@@ -10,7 +10,8 @@
         android:textSize="18sp"
         android:text="name"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"/>
     <TextView
         android:layout_centerVertical="true"
         android:layout_alignParentRight="true"
@@ -18,5 +19,6 @@
         android:text="4/18"
         android:textSize="16sp"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"/>
 </RelativeLayout>

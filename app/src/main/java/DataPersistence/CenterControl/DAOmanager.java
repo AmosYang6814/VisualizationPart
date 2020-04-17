@@ -4,6 +4,7 @@ import DataPersistence.AbstractStorage.PreserveId;
 import DataPersistence.AbstractStorage.PreserveComponent;
 import DataPersistence.AbstractStorage.PreserveRelation;
 import DataPersistence.AbstractStorage.PreserveStatus;
+import GlobalTools.FunctionClassXMLParaser;
 
 /**
  * Created by Administrator on 2020/2/1.
@@ -14,9 +15,10 @@ import DataPersistence.AbstractStorage.PreserveStatus;
  * 存储类的管理器，程序中对于存储类只持有唯一实例
  */
 public class DAOmanager {
-    static DAOmanager daOmanager=new DAOmanager();
+    static DAOmanager daOmanager=null;
 
     public static DAOmanager getDaOmanager() {
+        if(daOmanager==null)daOmanager=new DAOmanager();
         return daOmanager;
     }
 
@@ -26,6 +28,15 @@ public class DAOmanager {
     PreserveComponent componentDAO;
     PreserveStatus statusDAO;
     PreserveRelation relationDAO;
+
+    DAOmanager(){
+        preserveIdDAO= FunctionClassXMLParaser.getClassName("PreserveId");
+        preserveIdDAO.InitFile();
+
+        componentDAO=FunctionClassXMLParaser.getClassName("PreserveComponent");
+        statusDAO=FunctionClassXMLParaser.getClassName("PreserveStatus");
+        relationDAO=FunctionClassXMLParaser.getClassName("PreserveRelation");
+    }
 
     public static void setDaOmanager(DAOmanager daOmanager) {
         DAOmanager.daOmanager = daOmanager;
@@ -46,6 +57,7 @@ public class DAOmanager {
     public void setComponentDAO(PreserveComponent componentDAO) {
         this.componentDAO = componentDAO;
     }
+
 
     public PreserveStatus getStatusDAO() {
         return statusDAO;

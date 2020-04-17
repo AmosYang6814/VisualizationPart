@@ -1,25 +1,21 @@
-package com.example.administrator.visualizationpart;
+package com.example.administrator.visualizationpart.Adapter;
 
 import android.content.Context;
-import android.database.DataSetObserver;
-import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.io.Serializable;
+import com.example.administrator.visualizationpart.Global.GlobalApplication;
+import com.example.administrator.visualizationpart.R;
+
 import java.util.HashMap;
 import java.util.List;
 
 import GlobalTools.DataBean.Attribute;
-
-import static java.security.AccessController.getContext;
 
 public class AttributeAdapter extends ArrayAdapter<Attribute> {
 
@@ -29,6 +25,8 @@ public class AttributeAdapter extends ArrayAdapter<Attribute> {
     public HashMap<Attribute, Integer> getMap() {
         return map;
     }
+
+
     public AttributeAdapter(Context context, int textViewResourceId, List<Attribute> objects) {
         super(context, textViewResourceId, objects);
         resourceId = textViewResourceId;

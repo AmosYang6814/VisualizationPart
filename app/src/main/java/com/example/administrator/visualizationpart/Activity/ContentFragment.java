@@ -1,24 +1,34 @@
-package com.example.administrator.visualizationpart;
+package com.example.administrator.visualizationpart.Activity;
 
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ExpandableListView;
 import android.widget.ImageButton;
 
+import com.example.administrator.visualizationpart.Global.GlobalApplication;
+import com.example.administrator.visualizationpart.Logic.MainActivityLogic;
+import com.example.administrator.visualizationpart.Adapter.MyAdapter;
+import com.example.administrator.visualizationpart.R;
+import com.example.administrator.visualizationpart.Tools.ActivityTools;
 import com.google.gson.Gson;
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.impl.AttachListPopupView;
 import com.lxj.xpopup.interfaces.OnSelectListener;
 
+import java.lang.ref.SoftReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -29,6 +39,7 @@ import GlobalTools.DataBean.Action.Action;
 import GlobalTools.DataBean.Action.ActionMean;
 import GlobalTools.DataBean.Action.EventType;
 import GlobalTools.DataBean.Attribute;
+import GlobalTools.DataBean.Screen;
 import GlobalTools.DataBean.UiComponent;
 import UI.ComponentIndex.AbstractDataManager;
 import UI.ComponentIndex.DisplayComponent;
@@ -38,78 +49,88 @@ import UI.Draw.Size;
 import UI.EvenHanding.ActionPopMenu;
 import UI.EvenHanding.BuilderAction;
 import UI.EvenHanding.EvenPopMenu;
+import UI.ScreenStatus.ScreenManager;
+import UI.ScreenStatus.ScreenNumberManager;
 import UI.UICenterCtrol.UIGlobalManager;
 
-public class ContentActivity extends AppCompatActivity implements  Draw<View>,componentListinterface<ExpandableListView> , DisplayComponent , ActionPopMenu<View>, EvenPopMenu<View>, BuilderAction<View> {
+public class ContentFragment extends Fragment implements  Draw<View>,componentListinterface<ExpandableListView> , DisplayComponent , ActionPopMenu<View>, EvenPopMenu<View> {
     public final static int FLAG_DRAW=101;
     public final static int SET_ATTRIBUTE=1102;
 
-    private final MainActivityLogic mainActivityLogic=new MainActivityLogic();
-    /**
-     * 当前Id为测试id
-     */
-    public final int screenId= 101; //注册屏幕的id
+
+    private  SoftReference<MainActivityLogic>  mainActivityLogic=new SoftReference<MainActivityLogic>(new MainActivityLogic());
+
+    private String name;
+    private  MyAdapter myAdapter;
+
+
     public Handler handler=new Handler(){
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            Log.i("参数追踪",msg.getData().getString("childName"));
 
-            //testDraw();
-           setClickToListPopMenu(componentList,msg.getData().getString("childName"),msg.getData().getString("groupName"));
-        }
+            switch (msg.what){
+                case FrameActivity.CREATE_NEW_FRAGMENT:
+                    mainActivityLogic.get().AddAction(ContentFragment.this.getTag(),msg.getData().getString("Name"));
+                    break;
+                case FrameActivity.CANCEL_CREATE_FRAGMENT:
+                    mainActivityLogic.get().ClearAttachAction();
+                case FLAG_DRAW:
+                    setClickToListPopMenu(componentList,msg.getData().getString("childName"),msg.getData().getString("groupName"));
+                    break;
+
+            }
+
+           }
     };
 
-    View backgroundPanel;
+    ConstraintLayout backgroundPanel;
     ExpandableListView componentList;
     ConstraintLayout componentListPanel;
-    ConstraintLayout mainConstraintLayout;
     ImageButton componentflodButton;
+    private LinearLayoutManager mLayoutManager;
+    private View mainView;
 
     //动态组件添加
     LinkedList<UiComponent> dymicsViews=new LinkedList<>();
 
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+        mainView=inflater.inflate(R.layout.activity_main,container,false);
 
-        initView();/*初始化控件*/
+        getComponentList(inflater);
+        initView(mainView);/*初始化控件*/
         EventResiger();/*事件注册*/
 
-    }
+        return mainView;
 
+    }
 
     /**
      * 初始化方法
      * */
-    private void initView(){
-        backgroundPanel=findViewById(R.id.backgroundPanel);
-        mainConstraintLayout=findViewById(R.id.main_screen);
+    private void initView(View view){
 
-        componentList=findViewById(R.id.component_list);
+        backgroundPanel=view.findViewById(R.id.mainDraw);
+
+        componentList=view.findViewById(R.id.component_list);
         componentList.setVisibility(View.INVISIBLE);
+        componentList.setAdapter(myAdapter);
+        myAdapter.notifyDataSetChanged();
 
-        componentListPanel=findViewById(R.id.component_list_panel);
+        componentListPanel=view.findViewById(R.id.component_list_panel);
         componentListPanel.setBackgroundColor(Color.WHITE);
         componentListPanel.setVisibility(View.INVISIBLE);
 
-        componentflodButton=findViewById(R.id.component_flod_button);
+        componentflodButton=view.findViewById(R.id.component_flod_button);
     }
 
-
     /**
-     * 显示所有组件
+     * 获取组件
+     * @param layoutInflater
      */
-    @Override
-    public void displayAllComponent() {
-        if(componentList==null )return;
-
-        if(componentList.getAdapter()!=null){
-            componentList.setVisibility(View.VISIBLE);
-            componentListPanel.setVisibility(View.VISIBLE);
-            componentList.deferNotifyDataSetChanged();
-        }
+    private void getComponentList(LayoutInflater layoutInflater){
         LinkedList<UiComponent> result= AbstractDataManager.getAbstractDataManager().getAllcomponent();
 
 
@@ -118,7 +139,7 @@ public class ContentActivity extends AppCompatActivity implements  Draw<View>,co
         group.addAll(UIGlobalManager.getDataManager().getAllClassfy());
 
         /*获取各个分类，及其子项目*/
-        HashMap<String,ArrayList<String>> hashMap=new HashMap();
+        HashMap<String, ArrayList<String>> hashMap=new HashMap();
         for(String s:group)hashMap.put(s,new ArrayList<String>());
         for(UiComponent uiComponent:result){
             ArrayList arrayList=hashMap.get(uiComponent.getClassfiy());
@@ -127,16 +148,38 @@ public class ContentActivity extends AppCompatActivity implements  Draw<View>,co
         ArrayList<String> groupTemp=new ArrayList<>();
         groupTemp.addAll(group);
 
+
         ArrayList<ArrayList<String>> childtemp=new ArrayList<>();
         for(Map.Entry<String,ArrayList<String>> entry:hashMap.entrySet()){
             childtemp.add(entry.getValue());
         }
 
-        MyAdapter myAdapter=new MyAdapter(handler,this,groupTemp,childtemp);
+        myAdapter=new MyAdapter(handler,getActivity(),layoutInflater,groupTemp,childtemp);
+    }
 
-        componentList.setAdapter(myAdapter);
+
+    /**
+     * 设置名称并注册
+     * @param name
+     */
+    public void setName(String name){
+        this.name=name;
+    }
+
+    public String getName(){
+        return name;
+    }
+
+    /**
+     * 显示所有组件
+     */
+    @Override
+    public void displayAllComponent() {
+        if(componentList==null )return;
+
         componentList.setVisibility(View.VISIBLE);
         componentListPanel.setVisibility(View.VISIBLE);
+
     }
 
     /**
@@ -201,7 +244,7 @@ public class ContentActivity extends AppCompatActivity implements  Draw<View>,co
             @Override
             public boolean onTouch(View v, MotionEvent event) {
 
-               EventTag moveTag=( EventTag) view.getTag();
+               EventTag moveTag=( EventTag) view.getTag(R.id.event);
                 double x=event.getRawX();
                 double y=event.getRawY();
                 Log.d("参数追踪", "onTouch: "+event.getAction());
@@ -227,7 +270,7 @@ public class ContentActivity extends AppCompatActivity implements  Draw<View>,co
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EventTag eventTag=(EventTag) v.getTag();
+                EventTag eventTag=(EventTag) v.getTag(R.id.event);
                 Log.d("双击追踪", ""+eventTag.lastClickTime);
                 if(System.currentTimeMillis()-eventTag.lastClickTime>1000) eventTag.lastClickTime=System.currentTimeMillis();
                 else {
@@ -260,20 +303,28 @@ public class ContentActivity extends AppCompatActivity implements  Draw<View>,co
     public boolean drawInscreen(UiComponent simpleComponent) {
         try {
 
-            simpleComponent=mainActivityLogic.InitAndSetAttribute(this,simpleComponent);
+            if(mainActivityLogic.get()==null)mainActivityLogic=new SoftReference<MainActivityLogic>(new MainActivityLogic());
+            simpleComponent=mainActivityLogic.get().InitAndSetAttribute(getActivity(),simpleComponent);
 
             View newView= (View)simpleComponent.getComponentObj();
+
+            /**
+             * 设置关联
+             */
+            newView.setTag(R.id.uiComponent,simpleComponent);
+
             simpleComponent.setComponentObj(newView);
+
             ConstraintLayout.LayoutParams layoutParams=new ConstraintLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            layoutParams.topToTop=mainConstraintLayout.getId();
-            layoutParams.leftToLeft=mainConstraintLayout.getId();
-            layoutParams.rightToRight=mainConstraintLayout.getId();
+            layoutParams.topToTop=backgroundPanel.getId();
+            layoutParams.leftToLeft=backgroundPanel.getId();
+            layoutParams.rightToRight=backgroundPanel.getId();
             layoutParams.topMargin=500;
 
             registerViewToch(newView);
-            mainConstraintLayout.addView(newView,layoutParams);
+            backgroundPanel.addView(newView,layoutParams);
 
-            newView.setTag(new EventTag());
+            newView.setTag(R.id.event,new EventTag());
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -311,7 +362,7 @@ public class ContentActivity extends AppCompatActivity implements  Draw<View>,co
      */
     @Override
     public void setClickToListPopMenu(ExpandableListView object,String... name) {
-        Intent intent=new Intent(this,AttributeSettingPage.class);
+        Intent intent=new Intent(getActivity(),AttributeSettingPage.class);
         intent.putExtra("groupName",name[1]);
         intent.putExtra("childName",name[0]);
 
@@ -326,7 +377,7 @@ public class ContentActivity extends AppCompatActivity implements  Draw<View>,co
      * @param data
      */
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         switch (requestCode){
@@ -337,8 +388,10 @@ public class ContentActivity extends AppCompatActivity implements  Draw<View>,co
         }
     }
 
-
-
+    /**
+     * 加载数据
+     * @param data
+     */
     private void LoadData(Intent data){
 
         if(GlobalApplication.Debug){
@@ -352,9 +405,7 @@ public class ContentActivity extends AppCompatActivity implements  Draw<View>,co
         for(int i=0;i<attributeString.size();i++){
             attributes.add(g.fromJson(attributeString.get(i),Attribute.class));
         }
-
         UiComponent newView=AbstractDataManager.getAbstractDataManager().findComponentById(data.getIntExtra("componentid",0));
-
         newView.clearAttributes();
 
         for(Attribute attribute:attributes){
@@ -371,20 +422,27 @@ public class ContentActivity extends AppCompatActivity implements  Draw<View>,co
 
     private AttachListPopupView attachListPopupView=null;
     @Override
-    public void AttachActionPopMenu(View view,int eventPosition) {
-        XPopup.Builder builder=new XPopup.Builder(ContentActivity.this).atView(view);
+    public void AttachActionPopMenu(final View view, final int eventPosition) {
+        XPopup.Builder builder=new XPopup.Builder(getActivity()).atView(view);
         builder.asAttachList(ActionMean.getSeletionDisplay(), null,-100,0, new OnSelectListener() {
             @Override
             public void onSelect(int position, String text) {
-                Log.i("悬浮菜单点击追踪",text);
+                Log.i("悬浮菜单点击追踪","点击项"+position);
+                if(mainActivityLogic.get()==null)mainActivityLogic=new SoftReference<MainActivityLogic>(new MainActivityLogic());
+
+                if(position==0){
+                    ActivityTools.getInstance().AddNewContent(handler,ContentFragment.this,(AppCompatActivity) getActivity());
+                    mainActivityLogic.get().attachAddAction((UiComponent) (view.getTag(R.id.uiComponent)),eventPosition);
+                }
             }
         }).show();
     }
 
+
     @Override
     public void ClickToInvokeEvenPopMenu(final View target) {
 
-            XPopup.Builder builder=new XPopup.Builder(ContentActivity.this).atView(target);
+            XPopup.Builder builder=new XPopup.Builder(getActivity()).atView(target);
              attachListPopupView=builder.asAttachList(EventType.getSelectionDisplay(), null,-100,0, new OnSelectListener() {
                 @Override
                 public void onSelect(int position, String text) {
@@ -396,19 +454,8 @@ public class ContentActivity extends AppCompatActivity implements  Draw<View>,co
     }
 
     /**
-     * 构造并添加动作
-     * @param view
-     * @param eventPosition
-     * @param actionPosition
-     */
-    public void builderandAddAction(View view,int eventPosition,int actionPosition){
-        EventTag eventTag=(EventTag) view.getTag();
-        Action action=new Action(screenId,eventTag.componentId,EventType.getActionTypeByIndex(eventPosition),ActionMean.getActionMeanByIndex(actionPosition));
-        eventTag.actions.add(action);
-        UIGlobalManager.getEvenManager().addAction(screenId,action);
-    }
-    /**
      * ----------------------------------------------------------------------------------------------------------------------------------------------------------
+     * 注册该屏幕的状态
      */
 }
 

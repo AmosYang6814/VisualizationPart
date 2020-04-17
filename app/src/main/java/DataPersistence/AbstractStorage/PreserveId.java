@@ -44,4 +44,6 @@ public interface PreserveId {
     boolean clear(int type);
 
     boolean refreshAllId(int type,Set<Integer> collection);
+
+    boolean InitFile();
 }
