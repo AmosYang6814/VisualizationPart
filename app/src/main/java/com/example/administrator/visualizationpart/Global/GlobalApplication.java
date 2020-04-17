@@ -3,6 +3,7 @@ package com.example.administrator.visualizationpart.Global;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -24,7 +25,6 @@ import org.xml.sax.SAXException;
 
 import java.io.IOException;
 import java.io.InputStream;
-
 import javax.xml.parsers.ParserConfigurationException;
 
 import GlobalTools.DataBean.Screen;
@@ -129,11 +129,14 @@ public class GlobalApplication extends Application implements Perproties {
 
                if(attachListPopupView!=null && attachListPopupView.isShow())return;
 
-                 attachListPopupView=builder.asAttachList(new String[]{"新建项目","新建页面"}, null,-100,0, new OnSelectListener() {
+                 attachListPopupView=builder.asAttachList(new String[]{"新建项目","新建页面","新建逻辑代码"}, null,-100,0, new OnSelectListener() {
                     @Override
                     public void onSelect(int position, String text) {
                         if(position==1){
                             ActivityTools.getInstance().AddNewContent(null,null,(AppCompatActivity) context);
+                        }
+
+                        if(position==2){
                         }
                     }
                 });
